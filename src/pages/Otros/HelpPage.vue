@@ -14,7 +14,7 @@
       transition-next="slide-left"
       animated
       control-color="primary"
-      class="rounded-borders"
+      class="rounded-borders bordes"
     >
       <q-carousel-slide name="info" class="column no-wrap">
         <label class="text-h5 text-blue-grey-14"
@@ -194,5 +194,10 @@ const slide = ref("info");
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
+}
+.bordes {
+  border: 1px solid;
+  border-radius: 10px;
+  color: $blue-grey-14;
 }
 </style>

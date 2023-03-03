@@ -33,24 +33,23 @@
 
 <script setup>
 import { useBoardStore } from "src/stores/board-store";
-
-import { ref } from "@vue/reactivity";
-import { useQuasar } from "quasar";
+import { useNotify } from "src/composables/notifyHook";
 import { useRoute } from "vue-router";
 
-const $q = useQuasar();
-const promt = ref(false);
+const { successNotify, errorNotify } = useNotify();
 const boardStore = useBoardStore();
 
 const route = useRoute();
-const idtablero = route.params.idBoard;
+const idtablero = localStorage.getItem("keyboard");
 
 const InvitarUsuario = async () => {
   try {
     const Email = boardStore.sendEmail;
     const res = await boardStore.invitationBoard(Email, idtablero);
+    successNotify("El usuario fue invitado correctamente");
+    boardStore.sendEmail = null;
   } catch (error) {
-    //console.log("error", error);
+    errorNotify(error.error);
   }
 };
 </script>

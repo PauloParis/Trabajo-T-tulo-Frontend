@@ -1,5 +1,6 @@
 <template>
-  <div class="q-pa-md q-gutter-sm">
+  <div class="">
+    <!-- q-pa-md q-gutter-sm -->
     <q-dialog v-model="boardStore.btncyclecreate" persistent>
       <q-card style="min-width: 400px">
         <div class="q-pa-md">
@@ -47,9 +48,9 @@ const boardStore = useBoardStore();
 
 const loading = ref(false);
 
-const p = defineProps({
+/* const p = defineProps({
   idBoad: Number,
-});
+}); */
 const route = useRoute();
 const idtablero = route.params.idBoard;
 
@@ -58,6 +59,7 @@ const CrearCiclo = async () => {
     const msg = boardStore.NombreCiclo;
     const res = await boardStore.createCycle(msg, idtablero);
     boardStore.NombreCiclo = "";
+    await boardStore.getCycles(idtablero);
     $q.notify({
       type: "positive",
       message: "Se creó el Ciclo con Exito",

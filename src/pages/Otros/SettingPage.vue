@@ -106,11 +106,11 @@
 <script setup>
 import { ref } from "@vue/reactivity";
 import { useAccessStore } from "src/stores/access-store";
-import { useQuasar } from "quasar";
+import { useNotify } from "src/composables/notifyHook";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-const $q = useQuasar();
+const { successNotify, errorNotify } = useNotify();
 const promt = ref(false);
 const promt2 = ref(false);
 const accessStore = useAccessStore();
@@ -118,17 +118,11 @@ const accessStore = useAccessStore();
 const EliminarCuenta = async () => {
   try {
     const res = await accessStore.deleteUser();
-    $q.notify({
-      type: "positive",
-      message: "Se Elimino la Cuenta con Exito",
-    });
+    successNotify("Se Elimino la Cuenta con Exito FFFFFFFFF");
     accessStore.logout();
     router.push("/login");
   } catch (error) {
-    $q.notify({
-      type: "negative",
-      message: error.error,
-    });
+    errorNotify(error.error);
   }
 };
 </script>

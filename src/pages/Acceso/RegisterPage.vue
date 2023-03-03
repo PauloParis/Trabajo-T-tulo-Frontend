@@ -116,11 +116,11 @@
 import { ref } from "vue";
 import { useAccessStore } from "src/stores/access-store";
 import { useRouter } from "vue-router";
-import { useQuasar } from "quasar";
+import { useNotify } from "src/composables/notifyHook";
 
 const accessStore = useAccessStore();
 const router = useRouter();
-const $q = useQuasar();
+const { successNotify, errorNotify } = useNotify();
 
 const nombre_usuario = ref("");
 const apellido = ref("");
@@ -336,17 +336,10 @@ const handleSubmit = async () => {
       password.value,
       repassword.value
     );
-    $q.notify({
-      type: "positive",
-      message: "Registro Exitoso",
-    });
+    successNotify("Registro Exitoso");
     router.push("/login");
   } catch (error) {
-    $q.notify({
-      type: "negative",
-      message: error.error + "  Ingresar Otro Email",
-    });
-    //console.log("error", error);
+    errorNotify(error.error + " Ingresar Otro Email");
   }
 };
 </script>

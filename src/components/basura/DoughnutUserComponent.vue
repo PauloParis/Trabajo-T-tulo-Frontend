@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div>
     <Doughnut
       v-if="loaded"
@@ -96,3 +96,4 @@ const chartOptions = ref({
   scales: {},
 });
 </script>
+ -->

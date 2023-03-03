@@ -11,14 +11,15 @@ export const useMetricStore = defineStore("metric", () => {
   const GraficoCiclos = ref([]);
   const GraficoUsuarios = ref([]);
   const GraficoIndicadores = ref([]);
-  const GraficoIndicadores2 = ref([]);
+  const GraficoCiclosIndicadores = ref([]);
+  //const GraficoIndicadores2 = ref([]);
 
   const MetricaBoard = ref([]);
 
   //METRICAS
   const getAdminMetric = async () => {
     try {
-      console.log(adminStore.idTablero);
+      //console.log(adminStore.idTablero);
       const res = await api({
         method: "GET",
         url: `/admin/getMetric/${adminStore.idTablero}`,
@@ -27,15 +28,21 @@ export const useMetricStore = defineStore("metric", () => {
         },
       });
 
-      console.log(res.data.cycle[0].ciclos);
-      console.log(res.data.indicator[0].ciclos);
-      console.log(res.data.indicator2);
-      console.log(res.data.user[0].usuario_tableros);
+      //console.log(res.data.cycles[0].ciclos);
+      //console.log(res.data.indicators);
+      //console.log(res.data.cycles_indicators);
+      //console.log(res.data.users_indicators);
 
-      GraficoIndicadores2.value = [...res.data.indicator2];
-      GraficoCiclos.value = [...res.data.cycle[0].ciclos];
-      GraficoIndicadores.value = [...res.data.indicator[0].ciclos];
-      GraficoUsuarios.value = [...res.data.user[0].usuario_tableros];
+      /* console.log(res.data.indicator2);
+      console.log(res.data.user[0].usuario_tableros); */
+
+      /* GraficoIndicadores2.value = [...res.data.indicator2]; */
+      GraficoCiclos.value = [...res.data.cycles[0].ciclos];
+      GraficoIndicadores.value = [...res.data.indicators];
+      GraficoCiclosIndicadores.value = [...res.data.cycles_indicators];
+      GraficoUsuarios.value = [...res.data.users_indicators];
+
+      /*GraficoUsuarios.value = [...res.data.user[0].usuario_tableros]; */
 
       MetricaBoard.value = [...res.data.board];
     } catch (error) {
@@ -48,7 +55,8 @@ export const useMetricStore = defineStore("metric", () => {
     GraficoCiclos,
     GraficoUsuarios,
     GraficoIndicadores,
-    GraficoIndicadores2,
+    GraficoCiclosIndicadores,
+    //GraficoIndicadores2,
     getAdminMetric,
   };
 });

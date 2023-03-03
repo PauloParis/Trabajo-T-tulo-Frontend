@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div id="container">
     <BarChart :chartData="testData" />
   </div>
@@ -62,3 +62,4 @@ export default {
   },
 };
 </script>
+ -->

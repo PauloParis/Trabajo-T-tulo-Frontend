@@ -46,11 +46,11 @@ export default route(function (/* { store, ssrContext } */) {
       return next();
     }
 
-    if (requireBoard) {
-      if (!(document.cookie === `board=${boardStore.NombreTablero}`)) {
+    /* if (requireBoard) {
+      if (!sessionStorage.getItem("board")) {
         return next("/account");
       }
-    }
+    } */
 
     if (!sessionStorage.getItem("admin") && requireAdm) {
       return next("/account");

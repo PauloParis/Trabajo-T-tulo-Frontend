@@ -1,18 +1,16 @@
 <template>
   <q-page padding class="principal">
-    <div class="q-pa-xs col-12">
-      <nav>
-        <div class="row">
-          <label class="text-h4 text-blue-grey-14 text-weight-medium"
-            >Gestión de Tableros</label
-          >
-        </div>
-      </nav>
+    <div class="q-pa-xs">
+      <!-- Título Page -->
+      <label class="text-h4 text-blue-grey-14 text-weight-medium"
+        >Gestión de Tableros</label
+      >
     </div>
     <q-separator></q-separator>
-
     <br />
+
     <div class="q-pa-md">
+      <!-- Tabla -->
       <q-table
         ref="tableRef"
         tabindex="0"
@@ -54,6 +52,7 @@
       </q-table>
     </div>
     <div>
+      <!-- Dialogo -->
       <q-dialog
         v-model="dialog"
         persistent
@@ -64,7 +63,7 @@
         <q-card>
           <q-bar class="bg-blue-8">
             <q-space />
-
+            <!-- btn Cerrar -->
             <q-btn
               dense
               flat
@@ -77,68 +76,124 @@
             </q-btn>
           </q-bar>
 
-          <div class="q-pa-md">
-            <q-card-section class="row justify-between">
-              <div class="text-h4 col-6 text-weight-medium text-blue-grey-14">
-                Información del Tablero
-              </div>
-            </q-card-section>
-            <q-separator></q-separator>
-          </div>
-
+          <!-- Título info tablero -->
           <q-card-section class="q-pa-md">
-            <div class="row justify-between q-ma-md">
-              <label class="col-2 text-h5 blue-grey-10">Nombre:</label>
-              <label class="col-10 text-h5 text-weight-regular text-grey-14">{{
-                adminStore.nombreTablero
-              }}</label>
+            <div class="text-h5 text-weight-medium text-blue-grey-14">
+              Información del Tablero
             </div>
-            <div class="row justify-between q-ma-md">
-              <label class="col-2 text-h5 blue-grey-10">Año:</label>
-              <label class="col-10 text-h5 text-weight-regular text-grey-14">{{
-                adminStore.anio
-              }}</label>
-            </div>
-            <div class="row justify-between q-ma-md">
-              <label class="col-2 text-h5 blue-grey-10">Semestre:</label>
-              <label class="col-10 text-h5 text-weight-regular text-grey-14">{{
-                adminStore.semestre
-              }}</label>
+            <q-separator></q-separator>
+          </q-card-section>
+
+          <!-- información tablero -->
+          <q-card-section class="q-pa-md">
+            <div class="row">
+              <!-- Contenido -->
+              <div class="col-12 col-md-4">
+                <div class="q-pa-md">
+                  <div class="row bordes q-pa-md">
+                    <div class="col-4">
+                      <div class="text-body1 blue-grey-10">Nombre:</div>
+                    </div>
+                    <div class="col-8 text-weight-regular text-grey-14">
+                      {{ adminStore.nombreTablero }}
+                    </div>
+                    <div class="col-4">
+                      <div class="text-body1 blue-grey-10">Año:</div>
+                    </div>
+                    <div class="col-8 text-weight-regular text-grey-14">
+                      {{ adminStore.anio }}
+                    </div>
+                    <div class="col-4">
+                      <div class="text-body1 blue-grey-10">Semestre:</div>
+                    </div>
+                    <div class="col-8 text-weight-regular text-grey-14">
+                      {{ adminStore.semestre }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Contenido -->
+              <div class="col-12 col-md-8">
+                <div class="q-pa-md">
+                  <div class="row bordes q-pa-md">
+                    <div class="col-4">
+                      <div class="text-body1 blue-grey-10">Integrantes:</div>
+                    </div>
+                    <div class="col-8">
+                      <div class="row">
+                        <div class="col-12">
+                          <div
+                            class="espacio-ocupa q-mr-sm q-mb-sm q-pa-xs bordes shadow-2 efecto-indicadores"
+                            v-for="user in adminStore.usuariosTablero"
+                            :key="user.Email"
+                          >
+                            <div
+                              @click="
+                                infoUsuario(
+                                  (adminStore.btnOpenUserInfo = true),
+                                  (adminStore.idUser = user.ID_Usuario),
+                                  (adminStore.nombreUser = user.Nombre_Usuario),
+                                  (adminStore.apellidoUser = user.Apellido),
+                                  (adminStore.emailUser = user.Email),
+                                  (adminStore.paisUser = user.Pais),
+                                  (adminStore.tipoUser = user.Tipo_Usuario),
+                                  (adminStore.categoriaUser =
+                                    user.usuario_tableros[0].Categoria),
+                                  (adminStore.descripcionUser =
+                                    user.Descripcion)
+                                )
+                              "
+                            >
+                              {{ user.Nombre_Usuario }} {{ user.Apellido }}
+                            </div>
+                            <!-- componente infoUser -->
+                            <infoUserComponent></infoUserComponent>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </q-card-section>
-          <br />
-          <br />
-          <div class="q-pa-md row text-h4 text-weight-regular">
+
+          <!-- btn Editar -->
+          <div class="q-pa-md row">
             <q-btn
               icon="edit"
-              class="col-3"
-              size="lg"
+              class="col-12 col-md-4"
+              size="md"
               label="Editar"
               color="primary"
               @click="adminStore.btnedit = true"
             >
             </q-btn>
           </div>
+
           <br />
-          <q-card-section>
-            <div class="q-pa-md text-h4 text-weight-regular text-blue-grey-14">
+          <!-- Eliminar Tablero -->
+          <q-card-section class="q-pa-md">
+            <div class="text-h5 text-weight-regular text-blue-grey-14">
               Eliminar Tablero
             </div>
-
             <q-separator></q-separator>
           </q-card-section>
-          <q-card-section>
-            <div class="row">
-              <q-btn
-                icon="delete_outline"
-                class="col-3"
-                size="lg"
-                label="Eliminar"
-                color="negative"
-                @click="boardStore.btndelete = true"
-              ></q-btn>
-            </div>
-          </q-card-section>
+          <!-- btn Eliminar -->
+          <div class="row q-pa-md">
+            <q-btn
+              icon="delete_outline"
+              class="col-12 col-md-4"
+              size="md"
+              label="Eliminar"
+              color="negative"
+              @click="
+                (boardStore.openDialogDelete = true),
+                  (boardStore.TituloDelete = 'Tablero')
+              "
+            ></q-btn>
+          </div>
         </q-card>
       </q-dialog>
     </div>
@@ -149,36 +204,41 @@
 
 <script setup>
 import { ref } from "vue";
-//import editBoard from "src/components/admin/editBoardComponent.vue";
-import deleteBoard from "src/components/board/deleteBoardComponent.vue";
+import deleteBoard from "src/components/board/deleteComponent.vue";
 import editBoard from "src/components/admin/editBoardComponent.vue";
+import infoUserComponent from "src/components/admin/InfoUserComponent.vue";
+import { useNotify } from "src/composables/notifyHook";
 
 import { useBoardStore } from "src/stores/board-store";
 import { useAdminStore } from "src/stores/admin-store";
+import { useAccessStore } from "src/stores/access-store";
+
+const { errorNotify } = useNotify();
 
 const tableRef = ref(null);
-
 const navigationActive = ref(false);
 const pagination = ref({});
 const selected = ref([]);
 const filter = ref("");
-
 const dialog = ref(false);
 const maximizedToggle = ref(true);
-
 const boardStore = useBoardStore();
 const adminStore = useAdminStore();
+const accessStore = useAccessStore();
 
-const prompt = ref(false);
 adminStore.getBoards();
 
 const boards = adminStore.gestionTablero;
 
 const selected_row = ref({});
 
+const idreq = ref(null);
+
 const openModel = async (row) => {
   try {
     selected_row.value = row;
+    /* idreq.value = accessStore.idUsuario;
+    console.log(accessStore.idUsuario); */
     adminStore.idTablero = selected_row.value.ID_Tablero;
     boardStore.idTablero = selected_row.value.ID_Tablero;
     adminStore.nombreTablero = selected_row.value.Nombre_Tablero;
@@ -186,10 +246,16 @@ const openModel = async (row) => {
     adminStore.semestre = selected_row.value.Semestre;
     adminStore.color = selected_row.value.Color;
 
+    await adminStore.getUserBoard(adminStore.idTablero);
+
     dialog.value = true;
   } catch (error) {
-    console.log(error);
+    errorNotify();
   }
+};
+
+const infoUsuario = async (user) => {
+  console.log(user);
 };
 
 const vaciar = async () => {
@@ -247,6 +313,22 @@ const columns = [
 }
 .my-menu-link {
   color: #1976d2;
-  //background: Black;
+}
+.bordes {
+  border: 1px solid;
+  border-radius: 10px;
+  color: $blue-grey-14;
+}
+
+.espacio-ocupa {
+  display: inline-block;
+}
+
+.efecto-indicadores:hover {
+  cursor: pointer;
+  background-color: $blue-grey-2;
+}
+.efecto-indicadores {
+  background-color: white;
 }
 </style>

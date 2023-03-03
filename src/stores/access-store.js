@@ -5,6 +5,7 @@ import { api } from "src/boot/axios";
 export const useAccessStore = defineStore("access", () => {
   const token = ref(null);
   const expiresIn = ref(null);
+  const idUsuario = ref(null);
   const typeuser = ref(null);
   const NombreUsuario = ref(null);
   const Apellido = ref(null);
@@ -116,6 +117,7 @@ export const useAccessStore = defineStore("access", () => {
           Authorization: "Bearer " + token.value,
         },
       });
+      idUsuario.value = res.data.id;
       NombreUsuario.value = res.data.nombre;
       Apellido.value = res.data.apellido;
       Pais.value = res.data.pais;
@@ -212,6 +214,7 @@ export const useAccessStore = defineStore("access", () => {
     editInfoUser,
     editPassUser,
     deleteUser,
+    idUsuario,
     NombreUsuario,
     Apellido,
     Pais,

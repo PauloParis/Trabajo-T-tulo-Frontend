@@ -15,7 +15,7 @@
             :rules="[
               (val) => (val && val.length > 0) || 'Porfavor Escriba un Nombre',
               (val) =>
-                (val.length > 0 && val.length < 36) ||
+                (val.length > 0 && val.length < 25) ||
                 'No se permiten mas caracteres',
             ]"
           />
@@ -54,11 +54,7 @@
           <br />
           <br />
           <div align="center">
-            <q-color
-              v-model="boardStore.Color"
-              class=""
-              style="max-height: 400px; max-width: 250px"
-            />
+            <q-color v-model="boardStore.Color" class="" default-view="tune" />
           </div>
           <br />
           <q-card-actions align="right" class="text-primary">
@@ -81,11 +77,9 @@
 
 <script setup>
 import { useBoardStore } from "src/stores/board-store";
+import { useNotify } from "src/composables/notifyHook";
 
-import { ref } from "@vue/reactivity";
-import { useQuasar } from "quasar";
-
-const $q = useQuasar();
+const { successNotify, errorNotify } = useNotify();
 const boardStore = useBoardStore();
 
 const editarTablero = async () => {
@@ -99,16 +93,9 @@ const editarTablero = async () => {
     };
 
     await boardStore.editBoard(data);
-
-    $q.notify({
-      type: "positive",
-      message: "Los Datos del Tablero fueron Actualizados Correctamente",
-    });
+    successNotify("Los Datos del Tablero fueron Actualizados Correctamente");
   } catch (error) {
-    $q.notify({
-      type: "negative",
-      message: error.error,
-    });
+    errorNotify(error.error);
   }
 };
 </script>

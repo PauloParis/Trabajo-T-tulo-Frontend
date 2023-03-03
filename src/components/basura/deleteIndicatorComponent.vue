@@ -1,7 +1,5 @@
 <template>
-  <div class="q-pa-md"></div>
-
-  <div class="q-pa-md q-gutter-sm">
+  <div class="q-pa-md">
     <q-dialog v-model="boardStore.btndeleteindicator" persistent>
       <q-card style="min-width: 400px">
         <q-card-section>
@@ -10,7 +8,7 @@
         </q-card-section>
 
         <div class="q-pa-md column items-center">
-          <label class="col text-h6 text-red">
+          <label class="text- text-red">
             ¿Está Seguro de querer eliminar el Indicador?
           </label>
         </div>
@@ -31,19 +29,20 @@
 </template>
 
 <script setup>
-import { ref } from "@vue/reactivity";
+import { ref } from "vue";
 import { useBoardStore } from "src/stores/board-store";
 import { useQuasar } from "quasar";
 
 const $q = useQuasar();
 
-const promt = ref(false);
 const boardStore = useBoardStore();
 
 const removeIndicator = async () => {
   try {
     const id = boardStore.idIndicador;
+
     await boardStore.deleteIndicator(id);
+    boardStore.btnviewindicator = false;
     $q.notify({
       type: "positive",
       message: "El Indicador fue Eliminado Correctamente",

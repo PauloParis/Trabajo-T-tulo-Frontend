@@ -14,6 +14,16 @@ export const useAdminStore = defineStore("admin", () => {
   const anio = ref(null);
   const semestre = ref(null);
   const color = ref(null);
+  const usuariosTablero = ref([null]);
+  const btnOpenUserInfo = ref(false);
+  const idUser = ref(null);
+  const nombreUser = ref(null);
+  const apellidoUser = ref(null);
+  const emailUser = ref(null);
+  const paisUser = ref(null);
+  const tipoUser = ref(null);
+  const categoriaUser = ref(null);
+  const descripcionUser = ref(null);
   const felicidadTablero = ref(null);
 
   //gestion de usuarios
@@ -22,7 +32,7 @@ export const useAdminStore = defineStore("admin", () => {
   const GestionUsuario = ref([]);
 
   //
-  const Felicidad = ref([]);
+  const Felicidad = ref([]); //iclo
   const FelicidadIndicador = ref([]);
   const Ciclo = ref([]);
   const Indicador = ref([]);
@@ -30,6 +40,7 @@ export const useAdminStore = defineStore("admin", () => {
   const Usuario = ref([]);
 
   const gestionTablero = ref([]); //ADMIN
+  const idreq = ref(null);
 
   const btnedit = ref(false);
   //fuction
@@ -45,7 +56,25 @@ export const useAdminStore = defineStore("admin", () => {
         },
       });
       //gestionTablero.value = null;
+
       gestionTablero.value = [...res.data.Boards];
+      idreq.value = accessStore.idUsuario;
+    } catch (error) {
+      console.log(error.response?.data || error);
+    }
+  };
+  const getUserBoard = async (idtablero) => {
+    try {
+      const res = await api({
+        method: "GET",
+        url: `admin/usersBoard/${idtablero}`,
+        headers: {
+          Authorization: "Bearer " + accessStore.token,
+        },
+      });
+
+      usuariosTablero.value = [...res.data.usersBoard];
+      console.log(usuariosTablero.value);
     } catch (error) {
       console.log(error.response?.data || error);
     }
@@ -128,7 +157,21 @@ export const useAdminStore = defineStore("admin", () => {
 
     gestionTablero,
     getBoards,
+    getUserBoard,
+    usuariosTablero,
+    btnOpenUserInfo,
 
     btnedit,
+
+    idUser,
+    nombreUser,
+    apellidoUser,
+    emailUser,
+    paisUser,
+    tipoUser,
+    categoriaUser,
+    descripcionUser,
+
+    idreq,
   };
 });

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- class="q-pa-md q-gutter-sm" -->
     <q-dialog v-model="boardStore.btncreate" persistent>
       <q-card style="min-width: 400px">
         <div class="q-pa-md">
@@ -17,7 +16,7 @@
               (val) =>
                 (val !== null && val !== '') || 'Porfavor Ingrese Algún Nombre',
               (val) =>
-                (val.length > 0 && val.length < 36) ||
+                (val.length > 0 && val.length < 25) ||
                 'No se permiten mas caracteres',
             ]"
           />
@@ -37,16 +36,10 @@
             ]"
           />
           <br />
-          <label class="text-body1 text-grey-8"
-            >Seleccione color de fondo:</label
-          >
+          <div class="text-body1 text-grey-8">Seleccione color de fondo:</div>
           <br />
           <div align="center">
-            <br />
-            <q-color
-              v-model="boardStore.Color"
-              style="max-height: 400px; max-width: 250px"
-            />
+            <q-color v-model="boardStore.Color" default-view="tune" />
           </div>
           <br />
           <q-card-actions align="right" class="text-primary">
@@ -61,26 +54,20 @@
 </template>
 
 <script setup>
-import { ref } from "@vue/reactivity";
+import { ref } from "vue";
 import { useBoardStore } from "src/stores/board-store";
-import { useQuasar } from "quasar";
+import { useNotify } from "src/composables/notifyHook";
 
-const $q = useQuasar();
-const promt = ref(false);
+const { successNotify, errorNotify } = useNotify();
+//const promt = ref(false);
 const boardStore = useBoardStore();
 
 const CrearTablero = async () => {
   try {
     const res = await boardStore.createBoard();
-    $q.notify({
-      type: "positive",
-      message: "Se creó el Tablero con Exito",
-    });
+    successNotify("Se creó el Tablero con Exito");
   } catch (error) {
-    $q.notify({
-      type: "negative",
-      message: "Intente Nuevamente - " + error.error,
-    });
+    errorNotify(error.error);
   }
 };
 </script>

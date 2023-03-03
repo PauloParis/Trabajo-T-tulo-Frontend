@@ -1,18 +1,17 @@
 <template>
   <q-page padding class="principal">
-    <div class="q-pa-xs col-12">
-      <nav>
-        <div class="row">
-          <label class="text-h4 text-blue-grey-14 text-weight-medium"
-            >Gestión de Usuarios</label
-          >
-        </div>
-      </nav>
+    <div class="q-pa-xs">
+      <!-- Título Page -->
+      <label class="text-h4 text-blue-grey-14 text-weight-medium"
+        >Gestión de Usuarios</label
+      >
     </div>
     <q-separator></q-separator>
-
     <br />
+
     <div class="q-pa-md">
+      <!-- Tabla -->
+
       <q-table
         ref="tableRef"
         tabindex="0"
@@ -54,6 +53,7 @@
       </q-table>
     </div>
     <div>
+      <!-- Dialogo -->
       <q-dialog
         v-model="dialog"
         persistent
@@ -64,6 +64,7 @@
         <q-card class="bg-white">
           <q-bar class="bg-blue-8">
             <q-space />
+            <!-- btn Cerrar -->
             <q-btn
               dense
               flat
@@ -76,62 +77,72 @@
             </q-btn>
           </q-bar>
 
-          <div class="q-pa-md">
-            <q-card-section>
-              <div class="text-h4 text-weight-medium text-blue-grey-14">
-                Información del Usuario
-              </div>
-              <br />
-              <q-separator></q-separator>
-            </q-card-section>
-
-            <q-card-section class="q-pa-md">
-              <div class="row justify-between q-ma-md">
-                <label class="col-2 text-h5 blue-grey-10">Nombre:</label>
-                <label class="col-10 text-h6 text-weight-regular text-grey-14"
-                  >{{ selected_row.Nombre_Usuario }}
-                  {{ selected_row.Apellido }}</label
-                >
-              </div>
-
-              <div class="row justify-between q-ma-md">
-                <label class="col-2 text-h5 blue-grey-10">Correo:</label>
-                <label
-                  class="col-10 text-h6 text-weight-regular text-grey-14"
-                  >{{ selected_row.Email }}</label
-                >
-              </div>
-              <div class="row justify-between q-ma-md">
-                <label class="col-2 text-h5 blue-grey-10">País:</label>
-                <label
-                  class="col-10 text-h6 text-weight-regular text-grey-14"
-                  >{{ selected_row.Pais }}</label
-                >
-              </div>
-              <div class="row justify-between q-ma-md">
-                <label class="col-2 text-h5 blue-grey-10"
-                  >Tipo de Cuenta:</label
-                >
-                <label
-                  class="col-10 text-h6 text-weight-regular text-uppercase text-indigo-10"
-                  >{{ adminStore.tipoUsuario }}</label
-                >
-              </div>
-            </q-card-section>
-          </div>
-
-          <q-card-section>
-            <div class="text-h4 text-weight-regular text-blue-grey-14 q-pa-md">
-              Otorgar Permisos de:
+          <!-- Título info usuario -->
+          <q-card-section class="q-pa-md">
+            <div class="text-h5 text-weight-medium text-blue-grey-14">
+              Información del Usuario
             </div>
-            <br />
             <q-separator></q-separator>
           </q-card-section>
+
+          <!-- Información Usuario -->
+          <q-card-section class="q-pa-md">
+            <div class="row">
+              <div class="col-12 col-md-6 q-pa-md bordes">
+                <div class="row">
+                  <div class="col-4 q-mb-sm text-body1 text-blue-grey-10">
+                    Nombre:
+                  </div>
+                  <div
+                    class="col-8 q-mb-sm text-body1 text-weight-regular text-grey-14"
+                  >
+                    {{ selected_row.Nombre_Usuario }}
+                    {{ selected_row.Apellido }}
+                  </div>
+                  <div class="col-4 q-mb-sm text-body1 text-blue-grey-10">
+                    Email:
+                  </div>
+                  <div
+                    class="col-8 q-mb-sm text-body1 text-weight-regular text-grey-14"
+                  >
+                    {{ selected_row.Email }}
+                  </div>
+                  <div class="col-4 q-mb-sm text-body1 text-blue-grey-10">
+                    País:
+                  </div>
+                  <div
+                    class="col-8 q-mb-sm text-body1 text-weight-regular text-grey-14"
+                  >
+                    {{ selected_row.Pais }}
+                  </div>
+
+                  <div class="col-4 q-mb-sm text-body1 text-blue-grey-10">
+                    Tipo de Cuenta:
+                  </div>
+                  <div
+                    class="col-8 q-mb-sm text-body1 text-weight-regular text-indigo-10 text-uppercase"
+                  >
+                    {{ adminStore.tipoUsuario }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </q-card-section>
+
+          <!-- Cambiar Permisos -->
+          <q-card-section class="q-pa-md">
+            <div class="text-h5 text-weight-regular text-blue-grey-14">
+              Otorgar Permisos de:
+            </div>
+            <q-separator></q-separator>
+          </q-card-section>
+
+          <!-- btn admin y estandar -->
           <q-card-section>
             <div class="row justify-around">
               <q-btn
-                class="col-3"
-                size="lg"
+                class="col-5 col-sm-3 q-mr-sm"
+                size="md"
                 icon="manage_accounts"
                 label="Administrador"
                 color="primary"
@@ -139,11 +150,11 @@
               ></q-btn>
               <q-btn
                 outline
-                size="lg"
+                size="md"
                 icon="person"
                 label="Estandar"
                 color="primary"
-                class="q-ml-sm col-3"
+                class="col-5 col-sm-3"
                 @click="ChangeTypeUser(type)"
               ></q-btn>
             </div>
@@ -158,9 +169,9 @@
 import { ref } from "vue";
 import { useAdminStore } from "src/stores/admin-store";
 
-import { useQuasar } from "quasar";
+import { useNotify } from "src/composables/notifyHook";
 
-const $q = useQuasar();
+const { successNotify, errorNotify } = useNotify();
 const adminStore = useAdminStore();
 
 adminStore.getAdminUsers();
@@ -177,7 +188,7 @@ const openModel = async (row) => {
     adminStore.tipoUsuario = selected_row.value.Tipo_Usuario;
     dialog.value = true;
   } catch (error) {
-    console.log(error);
+    errorNotify();
   }
 };
 
@@ -195,15 +206,9 @@ const ChangeTypeUser = async (type) => {
       const res = await adminStore.editAdminTypeUser(type);
     }
 
-    $q.notify({
-      type: "positive",
-      message: "Los Permisos fueron Actualizados Correctamente",
-    });
+    successNotify("Los Permisos fueron Actualizados Correctamente");
   } catch (error) {
-    $q.notify({
-      type: "negative",
-      message: error.error,
-    });
+    errorNotify(error.error);
   }
 };
 
@@ -271,219 +276,6 @@ const columns = [
     sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
   },*/
 ];
-
-const rows = [
-  {
-    id: 1,
-    name: "Frozen Yogurt",
-    porcentajeFelicidad: 159,
-    anio: 6.0,
-    semestre: 24,
-  },
-  {
-    id: 2,
-    name: "Ice cream sandwich",
-    porcentajeFelicidad: 237,
-    anio: 9.0,
-    semestre: 37,
-  },
-  {
-    id: 3,
-    name: "Eclair",
-    porcentajeFelicidad: 262,
-    anio: 16.0,
-    semestre: 23,
-  },
-  {
-    id: 4,
-    name: "Cupcake",
-    porcentajeFelicidad: 305,
-    anio: 3.7,
-    semestre: 67,
-  },
-  {
-    id: 5,
-    name: "Gingerbread",
-    porcentajeFelicidad: 356,
-    anio: 16.0,
-    semestre: 49,
-  },
-  {
-    id: 6,
-    name: "Jelly bean",
-    porcentajeFelicidad: 375,
-    anio: 0.0,
-    semestre: 94,
-  },
-  {
-    id: 7,
-    name: "Lollipop",
-    porcentajeFelicidad: 392,
-    anio: 0.2,
-    semestre: 98,
-  },
-  {
-    id: 8,
-    name: "Honeycomb",
-    porcentajeFelicidad: 408,
-    anio: 3.2,
-    semestre: 87,
-  },
-  {
-    id: 9,
-    name: "Donut",
-    porcentajeFelicidad: 452,
-    anio: 25.0,
-    semestre: 51,
-  },
-  {
-    id: 10,
-    name: "KitKat",
-    porcentajeFelicidad: 518,
-    anio: 26.0,
-    semestre: 65,
-  },
-  {
-    id: 11,
-    name: "Frozen Yogurt-1",
-    porcentajeFelicidad: 159,
-    anio: 6.0,
-    semestre: 24,
-  },
-  {
-    id: 12,
-    name: "Ice cream sandwich-1",
-    porcentajeFelicidad: 237,
-    anio: 9.0,
-    semestre: 37,
-  },
-  {
-    id: 13,
-    name: "Eclair-1",
-    porcentajeFelicidad: 262,
-    anio: 16.0,
-    semestre: 23,
-  },
-  {
-    id: 14,
-    name: "Cupcake-1",
-    porcentajeFelicidad: 305,
-    anio: 3.7,
-    semestre: 67,
-  },
-  {
-    id: 15,
-    name: "Gingerbread-1",
-    porcentajeFelicidad: 356,
-    anio: 16.0,
-    semestre: 49,
-  },
-  {
-    id: 16,
-    name: "Jelly bean-1",
-    porcentajeFelicidad: 375,
-    anio: 0.0,
-    semestre: 94,
-  },
-  {
-    id: 17,
-    name: "Lollipop-1",
-    porcentajeFelicidad: 392,
-    anio: 0.2,
-    semestre: 98,
-  },
-  {
-    id: 18,
-    name: "Honeycomb-1",
-    porcentajeFelicidad: 408,
-    anio: 3.2,
-    semestre: 87,
-  },
-  {
-    id: 19,
-    name: "Donut-1",
-    porcentajeFelicidad: 452,
-    anio: 25.0,
-    semestre: 51,
-  },
-  {
-    id: 20,
-    name: "KitKat-1",
-    porcentajeFelicidad: 518,
-    anio: 26.0,
-    semestre: 65,
-  },
-  {
-    id: 21,
-    name: "Frozen Yogurt-2",
-    porcentajeFelicidad: 159,
-    anio: 6.0,
-    semestre: 24,
-  },
-  {
-    id: 22,
-    name: "Ice cream sandwich-2",
-    porcentajeFelicidad: 237,
-    anio: 9.0,
-    semestre: 37,
-  },
-  {
-    id: 23,
-    name: "Eclair-2",
-    porcentajeFelicidad: 262,
-    anio: 16.0,
-    semestre: 23,
-  },
-  {
-    id: 24,
-    name: "Cupcake-2",
-    porcentajeFelicidad: 305,
-    anio: 3.7,
-    semestre: 67,
-  },
-  {
-    id: 25,
-    name: "Gingerbread-2",
-    porcentajeFelicidad: 356,
-    anio: 16.0,
-    semestre: 49,
-  },
-  {
-    id: 26,
-    name: "Jelly bean-2",
-    porcentajeFelicidad: 375,
-    anio: 0.0,
-    semestre: 94,
-  },
-  {
-    id: 27,
-    name: "Lollipop-2",
-    porcentajeFelicidad: 392,
-    anio: 0.2,
-    semestre: 98,
-  },
-  {
-    id: 28,
-    name: "Honeycomb-2",
-    porcentajeFelicidad: 408,
-    anio: 3.2,
-    semestre: 87,
-  },
-  {
-    id: 29,
-    name: "Donut-2",
-    porcentajeFelicidad: 452,
-    anio: 25.0,
-    semestre: 51,
-  },
-  {
-    id: 30,
-    name: "KitKat-2",
-    porcentajeFelicidad: 518,
-    anio: 26.0,
-    semestre: 65,
-  },
-];
 </script>
 
 <style lang="scss" scoped>
@@ -497,5 +289,10 @@ const rows = [
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
+}
+.bordes {
+  border: 1px solid;
+  border-radius: 10px;
+  color: $blue-grey-14;
 }
 </style>

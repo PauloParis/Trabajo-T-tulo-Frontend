@@ -176,7 +176,7 @@
 </template>
 
 <script setup>
-import EssentialLink from "components/EssentialLink.vue";
+/* import EssentialLink from "components/EssentialLink.vue"; */
 import { useAccessStore } from "../stores/access-store";
 import { useRouter } from "vue-router";
 import { ref } from "@vue/reactivity";

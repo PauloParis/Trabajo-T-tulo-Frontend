@@ -2,11 +2,13 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { api } from "src/boot/axios";
 import { useAccessStore } from "src/stores/access-store";
-import { useQuasar } from "quasar";
+import { useAdminStore } from "src/stores/admin-store";
+import { useQuasar, Loading } from "quasar";
 import socket from "src/stores/socket-store";
 
 export const useBoardStore = defineStore("board", () => {
   const accessStore = useAccessStore();
+  const adminStore = useAdminStore();
   const $q = useQuasar();
   const notificacion = ref(false);
   //NO ES NECESARIO TRAERLO DE ACA --AREGLAR---
@@ -59,6 +61,13 @@ export const useBoardStore = defineStore("board", () => {
 
   const oldURL = ref(null);
   const url = ref(null);
+
+  const Titulo = ref(null);
+  const input = ref(null);
+  const openDialog = ref(false);
+  const TituloDelete = ref(null);
+  const openDialogDelete = ref(null);
+
   //fuction
 
   //BIEN
@@ -116,11 +125,11 @@ export const useBoardStore = defineStore("board", () => {
     }
   };
   //BIEN
-  const createIndicator = async (nombreIndicador, idCicle) => {
+  const createIndicator = async (nombreIndicador, idboard) => {
     try {
       const res = await api({
         method: "POST",
-        url: `/indicator/createindicador/${idCicle}`,
+        url: `/indicator/createindicador/${idboard}`,
         headers: {
           Authorization: "Bearer " + accessStore.token,
         },
@@ -189,15 +198,16 @@ export const useBoardStore = defineStore("board", () => {
     }
   };
   //BIEN
-  const getIndicator = async (idciclo) => {
+  const getIndicator = async (idtablero) => {
     try {
       const res = await api({
         method: "GET",
-        url: `/indicator/indicators/${idciclo}`,
+        url: `/indicator/indicators/${idtablero}`,
         headers: {
           Authorization: "Bearer " + accessStore.token,
         },
       });
+      //console.log(res.data);
       MisIndicadores.value = [...res.data.indicator];
     } catch (error) {
       console.log(error.response?.data || error);
@@ -244,18 +254,42 @@ export const useBoardStore = defineStore("board", () => {
         item.ID_Ciclo === data.ID_Ciclo ? data : item
       );
 
-      if (res.status == 200) {
+      getCycles(localStorage.getItem("keyboard"));
+
+      /* if (res.status == 200) {
         const edit = res.data.cycles;
         socket.emit("editarCiclo", edit);
-      }
+      } */
     } catch (error) {
       console.log(error.response?.data || error);
     }
   };
+
+  const editIndicator = async (data) => {
+    try {
+      const res = await api({
+        method: "PUT",
+        url: `/indicator/updateindicator/${data.ID_Indicador}`,
+        headers: {
+          Authorization: "Bearer " + accessStore.token,
+        },
+        data: {
+          nombre_indicador: data.Nombre_Indicador,
+        },
+      });
+      MisIndicadores.value = MisIndicadores.value.map((item) =>
+        item.ID_Indicador === data.ID_Indicador ? data : item
+      );
+    } catch (error) {
+      console.log(error.response?.data || error);
+    }
+  };
+
   //BIEN
   const deleteBoard = async (id) => {
     try {
-      $q.loading.show();
+      Loading.show();
+      //$q.loading.show();
       const res = await api({
         method: "DELETE",
         url: `/board/deleteboard/${id}`,
@@ -270,38 +304,48 @@ export const useBoardStore = defineStore("board", () => {
     } catch (error) {
       console.log(error.response?.data || error);
     } finally {
-      $q.loading.hide();
+      //$q.loading.hide();
+      Loading.hide();
     }
   };
   //BIEN
   const deleteCycle = async (id) => {
     try {
-      $q.loading.show();
+      Loading.show();
+      const idt = localStorage.getItem("keyboard");
       const res = await api({
         method: "DELETE",
-        url: `/cycle/deletecycle/${id}`,
+        url: `/cycle/deletecycle/${id}/${idt}`,
         headers: {
           Authorization: "Bearer " + accessStore.token,
         },
       });
 
-      if (res.status == 200) {
+      MisCiclos.value = MisCiclos.value.filter(
+        (item) => item.ID_Ciclo !== idCiclo.value
+      );
+
+      localStorage.setItem("happyboard", res.data.board.Felicidad_Tablero);
+      felicidadTablero.value = localStorage.getItem("happyboard");
+      //getCycles(localStorage.getItem("keyboard"));
+
+      /* if (res.status == 200) {
         MisCiclos.value = MisCiclos.value.filter(
           (item) => item.ID_Ciclo !== idCiclo.value
         );
         const remove = MisCiclos.value;
         socket.emit("eliminarCiclo", remove);
-      }
+      } */
     } catch (error) {
       console.log(error.response?.data || error);
     } finally {
-      $q.loading.hide();
+      Loading.hide();
     }
   };
   //BIEN
   const deleteIndicator = async (id) => {
     try {
-      $q.loading.show();
+      //$q.loading.show();
       const res = await api({
         method: "DELETE",
         url: `/indicator/deleteindicator/${id}`,
@@ -310,25 +354,33 @@ export const useBoardStore = defineStore("board", () => {
         },
       });
 
-      if (res.status == 200) {
+      MisIndicadores.value = MisIndicadores.value.filter(
+        (item) => item.ID_Indicador !== idIndicador.value
+      );
+
+      localStorage.setItem("happyboard", res.data.board.Felicidad_Tablero);
+      felicidadTablero.value = localStorage.getItem("happyboard");
+      getCycles(localStorage.getItem("keyboard"));
+
+      /* if (res.status == 200) {
         MisIndicadores.value = MisIndicadores.value.filter(
           (item) => item.ID_Indicador !== idIndicador.value
         );
         const remove = MisIndicadores.value;
         socket.emit("eliminarIndicador", remove);
-      }
+      } */
     } catch (error) {
       console.log(error.response?.data || error);
     } finally {
-      $q.loading.hide();
+      //$q.loading.hide();
     }
   };
   //BIEN
-  const disassociateBoard = async (id) => {
+  const disassociateBoard = async (idtablero, idUsuario) => {
     try {
       const res = await api({
         method: "DELETE",
-        url: `/board/disconnectboard/${id}`,
+        url: `/board/disconnectboard/${idtablero}/${idUsuario}`,
         headers: {
           Authorization: "Bearer " + accessStore.token,
         },
@@ -336,16 +388,26 @@ export const useBoardStore = defineStore("board", () => {
       TablerosInvitado.value = TablerosInvitado.value.filter(
         (item) => item.ID_Tablero !== idTablero.value
       );
+
+      adminStore.usuariosTablero = adminStore.usuariosTablero.filter(
+        (item) => item.ID_Usuario !== adminStore.idUser
+      );
     } catch (error) {
       console.log(error.response?.data || error);
     }
   };
-  //BIEN
-  const saveEvaluation = async (evaluation, idindicador) => {
+  //
+  const updateEvaluation = async (
+    idevaluacion,
+    evaluation,
+    idindicador,
+    idciclo,
+    idtablero
+  ) => {
     try {
       const res = await api({
-        method: "POST",
-        url: `/indicator/evaluation/${idindicador}`,
+        method: "PUT",
+        url: `/indicator/evaluation/${idevaluacion}/${idtablero}/${idciclo}/${idindicador}`,
         headers: {
           Authorization: "Bearer " + accessStore.token,
         },
@@ -353,15 +415,22 @@ export const useBoardStore = defineStore("board", () => {
           evaluacion: evaluation,
         },
       });
-      if (res.status === 200) {
-        return (notificacion.value = "ok");
-        /*$q.notify({
+
+      //console.log(idtablero);
+      localStorage.setItem("happyboard", res.data.board.Felicidad_Tablero);
+      felicidadTablero.value = localStorage.getItem("happyboard");
+      getCycles(idtablero);
+      //console.log(res.data.board.Felicidad_Tablero);
+      //if (res.status === 200) {
+      //return (notificacion.value = "ok");
+      /*$q.notify({
           type: "Positive",
           message: "Se realizó la evaluación Correctamente",
         });*/
-      }
+      //}
       //evaluacion.value = "";
     } catch (error) {
+      console.log(error);
       return (notificacion.value = "notok");
       /*$q.notify({
         type: "negative",
@@ -371,22 +440,32 @@ export const useBoardStore = defineStore("board", () => {
     }
   };
   //BIEN
-  const deleteEvaluation = async (idindicador) => {
+  const deleteEvaluation = async (
+    idevaluacion,
+    idtablero,
+    idciclo,
+    idindicador
+  ) => {
     try {
+      console.log(idevaluacion, idtablero, idciclo, idindicador);
       const res = await api({
         method: "DELETE",
-        url: `/indicator/deleteevaluation/${idindicador}`,
+        url: `/indicator/deleteevaluation/${idevaluacion}/${idtablero}/${idciclo}/${idindicador}`,
         headers: {
           Authorization: "Bearer " + accessStore.token,
         },
       });
-      if (res.status === 200) {
+
+      localStorage.setItem("happyboard", res.data.board.Felicidad_Tablero);
+      felicidadTablero.value = localStorage.getItem("happyboard");
+      getCycles(idtablero);
+      /* if (res.status === 200) {
         return (notificacion.value = "ok");
-        /*$q.notify({
+        $q.notify({
           type: "positive",
           message: "Se Eliminó la evaluación Correctamente",
-        });*/
-      }
+        });
+      } */
     } catch (error) {
       console.log(error.response?.data || error);
     }
@@ -478,9 +557,9 @@ export const useBoardStore = defineStore("board", () => {
         },
       });
 
-      console.log("xxxx", res.data.userbuscar);
+      //console.log("xxxx", res.data.userbuscar);
 
-      if (res.status === 200) {
+      /* if (res.status === 200) {
         const user = res.data.userbuscar;
         socket.emit("usuarios", user);
         sendEmail.value = "";
@@ -488,13 +567,15 @@ export const useBoardStore = defineStore("board", () => {
           type: "positive",
           message: "Se Invito el Usuario con Exito",
         });
-      }
+      } */
     } catch (error) {
-      $q.notify({
-        type: "negative",
-        message: error.response?.data.error,
-      });
-      console.log(error.response?.data || error);
+      if (error.response) {
+        throw error.response.data;
+      } else if (error.request) {
+        console.log(error.request);
+      } else {
+        console.log("Error", error.message);
+      }
     }
   };
 
@@ -510,6 +591,7 @@ export const useBoardStore = defineStore("board", () => {
       });
 
       usuarios.value = [...res.data.traerusuarios];
+      console.log(res.data.traerusuarios);
     } catch (error) {
       if (error.response) {
         throw error.response.data;
@@ -537,7 +619,26 @@ export const useBoardStore = defineStore("board", () => {
     }
   };
 
-  //getMyBoard();
+  const getEvaluations = async (idtablero) => {
+    try {
+      const res = await api({
+        method: "GET",
+        url: `/indicator/evaluations/${idtablero}`,
+      });
+
+      console.log("evaluaciones", res.data);
+
+      /* MisTableros.value = MisTableros.value.map((item) =>
+        item.ID_Tablero === data.ID_Tablero ? res.data.myboard : item
+      ); */
+    } catch (error) {
+      console.log(error.response?.data || error);
+    }
+  };
+
+  /* getCycles();
+  getIndicator(); */
+
   return {
     createBoard,
     createCycle,
@@ -551,13 +652,14 @@ export const useBoardStore = defineStore("board", () => {
     getIndicator,
     editBoard,
     editCycle,
+    editIndicator,
     deleteBoard,
     deleteCycle,
     deleteIndicator,
     deleteEvaluation,
     getguestBoards,
     disassociateBoard,
-    saveEvaluation,
+    /* saveEvaluation, */
     invitationBoard,
     NombreTablero,
     NombreCiclo,
@@ -603,5 +705,14 @@ export const useBoardStore = defineStore("board", () => {
     oldURL,
     url,
     notificacion,
+
+    Titulo,
+    input,
+    openDialog,
+
+    TituloDelete,
+    openDialogDelete,
+
+    updateEvaluation,
   };
 });

@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-btn
-      class="bg-orange-10 text-white"
+      class="bg-secondary text-white"
       icon="edit"
       @click="prompt = true"
       style="width: 100%"
@@ -10,7 +10,7 @@
     </q-btn>
   </div>
 
-  <div class="q-pa-md q-gutter-sm">
+  <div class="q-pa-md">
     <q-dialog v-model="prompt" persistent>
       <q-card style="min-width: 400px">
         <q-card-section>

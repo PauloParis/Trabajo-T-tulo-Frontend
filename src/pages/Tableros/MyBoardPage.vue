@@ -1,14 +1,17 @@
 <template>
   <q-page padding class="principal">
     <div class="q-pa-xs col-12">
+      <!-- título page -->
       <label class="text-h4 text-blue-grey-14 text-weight-medium"
         >Mis Tableros
       </label>
     </div>
     <q-separator></q-separator>
     <br />
-    <div class="row items-center">
+    <div class="row">
+      <!-- btn Crear Tablero & Buscador -->
       <div class="col-4">
+        <!-- btn Crear Tablero -->
         <q-btn
           label="Crear Tablero"
           color="primary"
@@ -21,8 +24,8 @@
 
         <createBoard />
       </div>
-
       <div class="col-8 q-ml-md" style="width: 50%">
+        <!-- Buscador -->
         <q-input v-model="search" placeholder="Buscar" disable></q-input>
       </div>
     </div>
@@ -30,35 +33,40 @@
     <br />
     <br />
 
-    <div class="row q-gutter-xl">
+    <!-- Card -->
+    <div class="row items-center centrar-card">
       <div v-for="(board, index) in boardStore.MisTableros" :key="index">
-        <q-card
-          flat
-          bordered
-          class="my-card"
-          :style="{
-            background: `linear-gradient(to left top, ${board.Color},white)`,
-          }"
-        >
-          <q-card-section>
-            <div class="row items-center no-wrap">
+        <q-card flat bordered class="my-card q-ma-md bordes">
+          <!-- Contenido card -->
+          <q-card-section
+            :style="{
+              background: `linear-gradient(to left top, ${board.Color},white)`,
+            }"
+          >
+            <div class="row">
               <div class="col">
-                <div class="text-h6 text-grey-9">
+                <!-- Título Card -->
+                <div
+                  class="text-body1 text-weight-regular q-pb-sm text-grey-10"
+                >
                   {{ board.Nombre_Tablero }}
                 </div>
-                <div class="text-subtitle2 text-black">
-                  Año: {{ board.Anio }}
-                </div>
-                <div class="text-subtitle2 text-black">
-                  Semestre: {{ board.Semestre }}
+                <!-- Año y Semestre -->
+                <div class="row text-caption">
+                  <div class="col-6 text-blue-grey-10">Año:</div>
+                  <div class="col-6">{{ board.Anio }}</div>
+                  <div class="col-6 text-blue-grey-10">Semestre:</div>
+                  <div class="col-6">{{ board.Semestre }}</div>
                 </div>
               </div>
 
+              <!-- Opciones Editar y Eliminar -->
               <div class="col-auto">
                 <q-btn color="grey-7" round flat icon="more_vert">
                   <q-menu cover auto-close>
                     <q-list>
-                      <q-item clickable>
+                      <q-item clickable class="no-padding">
+                        <!-- Opción Editar -->
                         <q-item-section class="text-secondary"
                           ><q-btn
                             flat
@@ -77,13 +85,15 @@
                         </q-item-section>
                       </q-item>
 
-                      <q-item clickable>
+                      <q-item clickable class="no-padding">
+                        <!-- Opción Eliminar -->
                         <q-item-section class="text-negative">
                           <q-btn
                             flat
                             @click="
-                              (boardStore.btndelete = true),
-                                (boardStore.idTablero = board.ID_Tablero)
+                              (boardStore.openDialogDelete = true),
+                                (boardStore.idTablero = board.ID_Tablero),
+                                (boardStore.TituloDelete = 'Tablero')
                             "
                             >Eliminar Tablero</q-btn
                           >
@@ -98,7 +108,8 @@
 
           <q-separator />
 
-          <q-card-actions align="center">
+          <!-- btn Abrir -->
+          <q-card-actions class="no-padding">
             <router-link
               class="card"
               :to="{
@@ -115,11 +126,15 @@
                 },
               }"
               ><q-btn
-                class="btn-fixed"
+                class="my-card"
+                style="height: 40px"
                 flat
                 label="Abrir"
                 @click="
-                  (boardStore.NombreTablero = board.Nombre_Tablero), oldpage()
+                  (boardStore.NombreTablero = board.Nombre_Tablero),
+                    (boardStore.idTablero = board.ID_Tablero),
+                    (boardStore.felicidadTablero = board.Felicidad_Tablero),
+                    oldpage()
                 "
               ></q-btn>
             </router-link>
@@ -128,18 +143,18 @@
       </div>
     </div>
     <editBoard></editBoard>
-    <deleteBoard></deleteBoard>
+    <deleteComponent></deleteComponent>
   </q-page>
 </template>
 
 <script setup>
 import createBoard from "src/components/board/createBoardComponent.vue";
 import editBoard from "src/components/board/editBoardComponent.vue";
-import deleteBoard from "src/components/board/deleteBoardComponent.vue";
+import deleteComponent from "src/components/board/deleteComponent.vue";
 
 import { useBoardStore } from "src/stores/board-store";
 import { useAccessStore } from "src/stores/access-store";
-import { ref } from "@vue/reactivity";
+import { ref } from "vue";
 
 const boardStore = useBoardStore();
 const accessStore = useAccessStore();
@@ -148,9 +163,12 @@ accessStore.getInfoUser();
 
 const search = ref("Buscar");
 
+//ARREGLAR
 const oldpage = async () => {
   boardStore.oldURL = window.location.href;
-  document.cookie = `board = ${boardStore.NombreTablero}`;
+  localStorage.setItem("keyboard", boardStore.idTablero);
+  localStorage.setItem("happyboard", boardStore.felicidadTablero);
+  localStorage.setItem("board", boardStore.NombreTablero);
 };
 </script>
 
@@ -160,7 +178,7 @@ const oldpage = async () => {
   color: black;
 }
 .my-card {
-  width: 250px;
+  width: 262px;
 }
 .principal {
   background: url("src/assets/perfil.png");
@@ -170,5 +188,17 @@ const oldpage = async () => {
 }
 .btn-fixed {
   width: 240px;
+}
+
+.bordes {
+  border: 1px solid;
+  border-radius: 10px;
+  color: $blue-grey-14;
+}
+
+@media only screen and (max-width: 1207px) {
+  .centrar-card {
+    justify-content: center;
+  }
 }
 </style>

@@ -35,34 +35,22 @@
 </template>
 
 <script setup>
-import { ref } from "@vue/reactivity";
 import { useBoardStore } from "src/stores/board-store";
-import { useQuasar } from "quasar";
+import { useNotify } from "src/composables/notifyHook";
 
-const $q = useQuasar();
-const promt = ref(false);
+const { successNotify, errorNotify } = useNotify();
 const storeBoard = useBoardStore();
 
 const editarCiclo = async () => {
   try {
-    console.log("paso las validaciones para editar el ciclo");
     const data = {
       ID_Ciclo: storeBoard.idCiclo,
       Nombre_Ciclo: storeBoard.NombreCiclo,
     };
-
-    //console.log(data.ID_Ciclo, data.Nombre_Ciclo);
     await storeBoard.editCycle(data);
-    $q.notify({
-      type: "positive",
-      message: "El Datos del ciclo fueron Actualizados Correctamente",
-    });
+    successNotify("El datos del ciclo fueron actualizados correctamente");
   } catch (error) {
-    $q.notify({
-      type: "negative",
-      message: error.error,
-    });
-    //console.log("error", error);
+    errorNotify(error.error);
   }
 };
 </script>

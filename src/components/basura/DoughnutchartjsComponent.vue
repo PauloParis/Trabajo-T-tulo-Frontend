@@ -1,5 +1,11 @@
 <template>
-  <div>
+  <div></div>
+</template>
+
+<script setup></script>
+
+<!-- <template>
+  <div class="q-mt-md">
     <Doughnut
       v-if="loaded"
       :chart-options="chartOptions"
@@ -65,11 +71,12 @@ const chartData = computed(() => ({
 
 const chartOptions = ref({
   plugins: {
-    title: {
+    /* title: {
       display: true,
       text: "CICLOS",
-    },
+    }, */
   },
   aspectRatio: 2,
 });
 </script>
+ -->

@@ -24,7 +24,7 @@
                       </div>
                     </div>
 
-                    <q-form class="q-gutter-md" @submit.prevent="handleSubmit">
+                    <q-form @submit.prevent="handleSubmit">
                       <q-input
                         filled
                         v-model="email"
@@ -49,8 +49,9 @@
                             'La contraseña mínimo 6 caracteres',
                         ]"
                       />
+                      <!-- btn login & register -->
                       <div class="row justify-between">
-                        <div class="col-6">
+                        <div>
                           <q-btn
                             label="Iniciar Sesión"
                             type="submit"
@@ -65,7 +66,7 @@
                           />
                         </div>
 
-                        <div class="col-4"></div>
+                        <!-- <div class="col-4"></div> -->
                       </div>
                     </q-form>
                   </div>
@@ -83,24 +84,21 @@
 import { ref } from "vue";
 import { useAccessStore } from "src/stores/access-store";
 import { useRouter } from "vue-router";
-import { useQuasar } from "quasar";
+import { useNotify } from "src/composables/notifyHook";
 
 const accessStore = useAccessStore();
 const router = useRouter();
-const $q = useQuasar();
+const { errorNotify } = useNotify();
 
-const email = ref("");
-const password = ref("");
+const email = ref("vescobar@utem.cl");
+const password = ref("123456");
 
 const handleSubmit = async () => {
   try {
     await accessStore.access(email.value, password.value);
     router.push("/account");
   } catch (error) {
-    $q.notify({
-      type: "negative",
-      message: "Email o Contraseña Incorrecta",
-    });
+    errorNotify("Email o Contraseña Incorrecta");
   }
 };
 </script>

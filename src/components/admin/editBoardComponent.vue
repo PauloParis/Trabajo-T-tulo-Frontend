@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div>
     <q-dialog v-model="adminStore.btnedit" persistent>
       <q-card style="min-width: 400px">
         <q-card-section>
@@ -61,30 +61,23 @@
 </template>
 
 <script setup>
-import { ref } from "@vue/reactivity";
+import { ref } from "vue";
 import { useBoardStore } from "src/stores/board-store";
-import { useQuasar } from "quasar";
+import { useNotify } from "src/composables/notifyHook";
 import { useAdminStore } from "src/stores/admin-store";
 
-const $q = useQuasar();
-const prompt = ref(false);
+const { successNotify, errorNotify } = useNotify();
+//const prompt = ref(false);
 
 const storeBoard = useBoardStore();
 const adminStore = useAdminStore();
 
 const editarTablero = async () => {
   try {
-    console.log("paso las validaciones para editar el tablero");
     await adminStore.editAdminBoard();
-    $q.notify({
-      type: "positive",
-      message: "El Datos del tablero fueron Actualizados Correctamente",
-    });
+    successNotify("El Datos del tablero fueron Actualizados Correctamente");
   } catch (error) {
-    $q.notify({
-      type: "negative",
-      message: error.error,
-    });
+    errorNotify(error.error);
   }
 };
 </script>

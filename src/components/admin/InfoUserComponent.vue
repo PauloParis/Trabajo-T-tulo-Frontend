@@ -57,12 +57,28 @@
             </q-scroll-area>
           </div>
         </div>
+        <q-card-actions align="right" class="text-primary q-mb-lg">
+          <q-btn
+            @click="desvincularUsuario"
+            label="Desvincular"
+            style="width: 100%"
+            outline
+            v-close-popup
+            ><q-tooltip class="bg-purple text-body2 column"
+              ><div class="">
+                Si desvincula al usuario 'CREADOR', se eliminará el tablero y
+                toda su información
+              </div>
+            </q-tooltip></q-btn
+          >>
+        </q-card-actions>
       </q-card>
     </q-dialog>
   </div>
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { useNotify } from "src/composables/notifyHook";
 import { useAdminStore } from "src/stores/admin-store";
 import { useBoardStore } from "src/stores/board-store";

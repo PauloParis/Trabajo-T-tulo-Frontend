@@ -1,9 +1,10 @@
 <template>
-  <div class="q-pa-md q-gutter-sm">
+  <div class="">
+    <!-- q-pa-md q-gutter-sm -->
     <q-dialog v-model="boardStore.btnindicatorcreate" persistent>
       <q-card style="min-width: 400px">
         <div class="q-pa-md">
-          <div class="text-h6">Crear Indicador {{ boardStore.idCiclo }}</div>
+          <div class="text-h6">Crear Indicador</div>
           <q-separator></q-separator>
         </div>
 
@@ -51,9 +52,10 @@ const loading = ref(false);
 const CrearIndicador = async () => {
   try {
     const nameindicator = boardStore.NombreIndicador;
-    const idcycle = boardStore.idCiclo;
-    const res = await boardStore.createIndicator(nameindicator, idcycle);
+    const idboard = boardStore.idTablero;
+    const res = await boardStore.createIndicator(nameindicator, idboard);
     boardStore.NombreIndicador = "";
+    await boardStore.getIndicator(idboard);
 
     $q.notify({
       type: "positive",

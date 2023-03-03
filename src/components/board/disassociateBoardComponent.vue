@@ -2,17 +2,17 @@
   <div class="q-pa-md"></div>
 
   <div class="q-pa-md q-gutter-sm">
-    <q-dialog v-model="storeBoard.btndisassociate" persistent>
-      <q-card style="min-width: 400px">
+    <q-dialog v-model="boardStore.btndisassociate" persistent>
+      <q-card style="width: 500px">
         <q-card-section>
           <div class="text-h6">Desvincularse del Tablero</div>
           <q-separator></q-separator>
         </q-card-section>
 
-        <div class="q-pa-md column items-center">
-          <label class="col text-h6 text-red">
-            ¿Está Seguro de querer desvincularse del Tablero?
-          </label>
+        <div class="q-pa-md">
+          <div class="text-center text-body1 text-red">
+            ¿Está seguro(a) de querer desvincularse del Tablero?
+          </div>
         </div>
 
         <br />
@@ -27,43 +27,22 @@
 
 <script setup>
 import { useBoardStore } from "src/stores/board-store";
-import { useQuasar } from "quasar";
+import { useNotify } from "src/composables/notifyHook";
+import { useAccessStore } from "src/stores/access-store";
 
-const $q = useQuasar();
-const storeBoard = useBoardStore();
+const { successNotify, errorNotify } = useNotify();
+const boardStore = useBoardStore();
+const accessStore = useAccessStore();
 
 const disassociate = async () => {
   try {
-    const id = storeBoard.idTablero;
-
-    //await trayendo a todos los indicadores
-    //hago un ciclo for con los indicadores traidos
-    //array donde guardo el id de cada indicador
-    //hago un ciclo for, con el array
-    //llamo a la funcion de happyindicador
-
-    let indicadores = [];
-    await storeBoard.getIndicatorsdisconnect(id);
-    for (var i = 0; i < storeBoard.INDICADORESDISCONNET.length; i++) {
-      indicadores[i] = storeBoard.INDICADORESDISCONNET[i].ID_Indicador;
-    }
-
-    for (var i = 0; i < indicadores.length; i++) {
-      let id = indicadores[i];
-      await storeBoard.happyIndicator(id);
-    }
-
-    await storeBoard.disassociateBoard(id);
-    indicadores = [];
-    $q.notify({
-      type: "positive",
-      message: "Fuiste Desvinculado del Tablero Correctamente",
-    });
+    await boardStore.disassociateBoard(
+      boardStore.idTablero,
+      accessStore.idUsuario
+    );
+    successNotify("Fuiste Desvinculado del Tablero Correctamente");
   } catch (error) {
-    $q.notify({
-      type: "negative",
-      message: error.error,
-    });
+    errorNotify(error.error);
   }
 };
 </script>
