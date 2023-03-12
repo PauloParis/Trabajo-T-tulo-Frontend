@@ -1,7 +1,7 @@
 <template>
   <div>
-    <q-dialog v-model="boardStore.btncreate" persistent>
-      <q-card style="min-width: 400px">
+    <q-dialog v-model="boardStore.openDialogCreate" persistent>
+      <q-card style="width: 400px">
         <div class="q-pa-md">
           <div class="text-h6">Crear Tablero</div>
           <q-separator></q-separator>
@@ -9,7 +9,7 @@
 
         <q-form class="q-pa-md" @submit.prevent="CrearTablero">
           <q-input
-            v-model="boardStore.NombreTablero"
+            v-model="boardStore.infoTablero.NombreTablero"
             label="Nombre"
             placeholder="Ingrese Nombre"
             :rules="[
@@ -22,7 +22,7 @@
           />
 
           <q-input
-            v-model.number="boardStore.Semestre"
+            v-model.number="boardStore.infoTablero.Semestre"
             type="number"
             label="Semestre"
             placeholder="Ingrese Semestre"
@@ -39,7 +39,10 @@
           <div class="text-body1 text-grey-8">Seleccione color de fondo:</div>
           <br />
           <div align="center">
-            <q-color v-model="boardStore.Color" default-view="tune" />
+            <q-color
+              v-model="boardStore.infoTablero.Color"
+              default-view="tune"
+            />
           </div>
           <br />
           <q-card-actions align="right" class="text-primary">
@@ -54,20 +57,28 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
 import { useBoardStore } from "src/stores/board-store";
 import { useNotify } from "src/composables/notifyHook";
+import { useQuasar } from "quasar";
 
-const { successNotify, errorNotify } = useNotify();
-//const promt = ref(false);
 const boardStore = useBoardStore();
+const { successNotify, errorNotify } = useNotify();
+const $q = useQuasar();
 
 const CrearTablero = async () => {
   try {
-    const res = await boardStore.createBoard();
-    successNotify("Se creó el Tablero con Exito");
+    $q.loading.show();
+    await boardStore.createBoard();
+    successNotify("Se creó el tablero con éxito");
   } catch (error) {
-    errorNotify(error.error);
+    errorNotify(error);
+  } finally {
+    $q.loading.hide();
+    boardStore.infoTablero = {
+      NombreTablero: "",
+      Semestre: "",
+      Color: "#b2b2b2",
+    };
   }
 };
 </script>

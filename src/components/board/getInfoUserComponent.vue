@@ -14,25 +14,26 @@
             Nombre:
           </div>
           <div class="col-6 text-body1 blue-grey-14">
-            {{ adminStore.nombreUser }} {{ adminStore.apellidoUser }}
+            {{ adminStore.usuarioInfo.name }}
+            {{ adminStore.usuarioInfo.surname }}
           </div>
           <div class="col-6 q-pb-sm text-body1 text-weight-medium blue-grey-10">
             Email:
           </div>
           <div class="col-6 text-body1 blue-grey-14">
-            {{ adminStore.emailUser }}
+            {{ adminStore.usuarioInfo.email }}
           </div>
           <div class="col-6 q-pb-sm text-body1 text-weight-medium blue-grey-10">
             Pais:
           </div>
           <div class="col-6 text-body1 blue-grey-14">
-            {{ adminStore.paisUser }}
+            {{ adminStore.usuarioInfo.country }}
           </div>
           <div class="col-6 q-pb-sm text-body1 text-weight-medium blue-grey-10">
             Tipo de Usuario:
           </div>
           <div class="col-6 text-body1 blue-grey-14">
-            {{ adminStore.tipoUser }}
+            {{ adminStore.usuarioInfo.type }}
           </div>
           <div
             class="col-6 q-pb-sm text-body1 text-weight-medium blue-grey-10 text-primary"
@@ -42,7 +43,7 @@
           <div
             class="col-6 text-body1 blue-grey-14 text-uppercase text-weight-medium text-primary"
           >
-            {{ adminStore.categoriaUser }}
+            {{ adminStore.usuarioInfo.category }}
           </div>
           <div class="col-6 q-mb-sm text-body1 text-weight-medium blue-grey-10">
             Descripción:
@@ -53,7 +54,7 @@
               :bar-style="barStyle"
               style="height: 80px"
             >
-              <div v-html="adminStore.descripcionUser"></div>
+              <div v-html="adminStore.usuarioInfo.description"></div>
             </q-scroll-area>
           </div>
         </div>

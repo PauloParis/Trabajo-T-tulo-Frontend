@@ -18,7 +18,8 @@
             Nombre:
           </div>
           <div class="col-8 q-pl-sm text-h6 text-weight-regular text-grey-14">
-            {{ accessStore.NombreUsuario }} {{ accessStore.Apellido }}
+            {{ accessStore.infoUsuario.NombreUsuario }}
+            {{ accessStore.infoUsuario.Apellido }}
           </div>
           <!-- País -->
           <div
@@ -27,7 +28,7 @@
             País:
           </div>
           <div class="col-8 q-pl-sm text-h6 text-weight-regular text-grey-14">
-            {{ accessStore.Pais }}
+            {{ accessStore.infoUsuario.Pais }}
           </div>
           <!-- Correo -->
           <div
@@ -36,7 +37,7 @@
             Email:
           </div>
           <div class="col-8 q-pl-sm text-h6 text-weight-regular text-grey-14">
-            {{ accessStore.Correo }}
+            {{ accessStore.infoUsuario.Email }}
           </div>
           <!-- Descripción -->
           <div
@@ -52,7 +53,7 @@
             >
               <div
                 class="bg-grey-2 q-pa-sm"
-                v-html="accessStore.Descripcion"
+                v-html="accessStore.infoUsuario.Descripcion"
               ></div>
             </q-scroll-area>
           </div>
@@ -67,7 +68,7 @@
         <div
           class="q-ma-sm text-weight-regular text-h5 text-indigo-10 text-uppercase"
         >
-          {{ accessStore.typeuser }}
+          {{ accessStore.infoUsuario.TipoUsuario }}
         </div>
       </div>
     </div>

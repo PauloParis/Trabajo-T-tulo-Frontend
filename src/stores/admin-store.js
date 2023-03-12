@@ -2,52 +2,56 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { api } from "src/boot/axios";
 import { useAccessStore } from "src/stores/access-store";
+import { Loading } from "quasar";
 
 export const useAdminStore = defineStore("admin", () => {
-  //const
-
   const accessStore = useAccessStore();
 
-  //gestion de tableros
-  const idTablero = ref(null);
-  const nombreTablero = ref(null);
-  const anio = ref(null);
-  const semestre = ref(null);
-  const color = ref(null);
-  const usuariosTablero = ref([null]);
-  const btnOpenUserInfo = ref(false);
-  const idUser = ref(null);
-  const nombreUser = ref(null);
-  const apellidoUser = ref(null);
-  const emailUser = ref(null);
-  const paisUser = ref(null);
-  const tipoUser = ref(null);
-  const categoriaUser = ref(null);
-  const descripcionUser = ref(null);
-  const felicidadTablero = ref(null);
+  const infoTablero = ref({
+    // manageBoard
+    IdTablero: null,
+    NombreTablero: null,
+    Anio: null,
+    Semestre: null,
+    Color: null,
+    FelicidadTablero: null,
+  });
+  const openDialogEditBoard = ref(false); // editar tablero
+  const gestionTablero = ref([]); // tableros del usuario - manageBoard
+  const usuariosTablero = ref([]); // usuarios del tablero - manageBoard
 
-  //gestion de usuarios
-  const idUsuario = ref(null);
-  const tipoUsuario = ref(null);
-  const GestionUsuario = ref([]);
+  const openDialogUserInfo = ref(false); // información del usuario - manageBoard
 
-  //
-  const Felicidad = ref([]); //iclo
+  const usuarioInfo = ref({
+    // información del usuario - manageBoard
+    id: null,
+    name: null,
+    surname: null,
+    email: null,
+    country: null,
+    type: null,
+    category: null,
+    description: null,
+  });
+
+  const GestionUsuario = ref([]); // todos los usuarios - manageUser
+
+  const infoManageUser = ref({
+    IdUsuario: null,
+    TipoUsuario: null,
+  });
+
+  const Felicidad = ref([]); //ciclo
   const FelicidadIndicador = ref([]);
   const Ciclo = ref([]);
   const Indicador = ref([]);
   const NombreCiclo = ref([]);
   const Usuario = ref([]);
 
-  const gestionTablero = ref([]); //ADMIN
-  const idreq = ref(null);
-
-  const btnedit = ref(false);
-  //fuction
-
-  //TRAIGO TABLEROS
+  // traer tableros del usuario - manageBoard
   const getBoards = async () => {
     try {
+      Loading.show();
       const res = await api({
         method: "GET",
         url: `/admin/allBoard`,
@@ -55,16 +59,19 @@ export const useAdminStore = defineStore("admin", () => {
           Authorization: "Bearer " + accessStore.token,
         },
       });
-      //gestionTablero.value = null;
 
       gestionTablero.value = [...res.data.Boards];
-      idreq.value = accessStore.idUsuario;
     } catch (error) {
-      console.log(error.response?.data || error);
+      throw error.response?.data.error || error;
+    } finally {
+      Loading.hide();
     }
   };
+
+  // traer usuarios del tablero seleccionado - manageBoard
   const getUserBoard = async (idtablero) => {
     try {
+      Loading.show();
       const res = await api({
         method: "GET",
         url: `admin/usersBoard/${idtablero}`,
@@ -74,35 +81,60 @@ export const useAdminStore = defineStore("admin", () => {
       });
 
       usuariosTablero.value = [...res.data.usersBoard];
-      console.log(usuariosTablero.value);
     } catch (error) {
-      console.log(error.response?.data || error);
+      throw error.response?.data.error || error;
+    } finally {
+      Loading.hide();
     }
   };
-  //EDITO TABLEROS
+
+  // editar tablero - manageBoard
   const editAdminBoard = async () => {
     try {
-      const res = await api({
+      await api({
         method: "PUT",
-        url: `/board/updateboard/${idTablero.value}`,
+        url: `/board/updateboard/${infoTablero.value.IdTablero}`,
         headers: {
           Authorization: "Bearer " + accessStore.token,
         },
         data: {
-          nombre_tablero: nombreTablero.value,
-          anio: anio.value,
-          semestre: semestre.value,
-          color: color.value,
+          nombre_tablero: infoTablero.value.NombreTablero,
+          anio: infoTablero.value.Anio,
+          semestre: infoTablero.value.Semestre,
+          color: infoTablero.value.Color,
         },
       });
     } catch (error) {
-      console.log(error.response?.data || error);
+      throw error.response?.data.error || error;
     }
   };
 
-  //TRAIGO USUARIOS
+  // cambiar categoria del usuario - manageBoard
+  const changeCategory = async () => {
+    try {
+      const res = await api({
+        method: "PUT",
+        url: `/admin/changeCategory/${usuarioInfo.value.id}/${infoTablero.value.IdTablero}`,
+        headers: {
+          Authorization: "Bearer " + accessStore.token,
+        },
+        data: {
+          categoria: usuarioInfo.value.category,
+        },
+      });
+
+      usuariosTablero.value = usuariosTablero.value.map((item) =>
+        item.ID_Usuario === usuarioInfo.value.id ? res.data.userCategory : item
+      );
+    } catch (error) {
+      throw error.response?.data.error || error;
+    }
+  };
+
+  // traer a todos los usuarios menos el propio
   const getAdminUsers = async () => {
     try {
+      Loading.show();
       const res = await api({
         method: "GET",
         url: `/admin/allusers`,
@@ -112,39 +144,53 @@ export const useAdminStore = defineStore("admin", () => {
       });
       GestionUsuario.value = [...res.data.users];
     } catch (error) {
-      console.log(error.response?.data || error);
+      throw error.response?.data.error || error;
+    } finally {
+      Loading.hide();
     }
   };
-  //EDITO USUARIOS
-  const editAdminTypeUser = async (type) => {
+
+  // editar el tipo de usuario administrador - estandar
+  const editAdminTypeUser = async () => {
     try {
       const res = await api({
         method: "PUT",
-        url: `/admin/typeuser/${idUsuario.value}`,
+        url: `/admin/typeuser/${infoManageUser.value.IdUsuario}`,
         headers: {
           Authorization: "Bearer " + accessStore.token,
         },
         data: {
-          tipo_usuario: type,
+          tipo_usuario: infoManageUser.value.TipoUsuario,
         },
       });
-      tipoUsuario.value = res.data.usertype.Tipo_Usuario;
+
+      GestionUsuario.value = GestionUsuario.value.map((item) =>
+        item.ID_Usuario === infoManageUser.value.IdUsuario
+          ? res.data.user
+          : item
+      );
     } catch (error) {
-      console.log(error.response?.data || error);
+      throw error.response?.data.error || error;
     }
   };
 
   return {
-    idTablero,
-    nombreTablero,
-    anio,
-    semestre,
-    color,
-    felicidadTablero,
+    infoTablero,
+    openDialogEditBoard,
+    gestionTablero,
+    usuariosTablero,
+
+    openDialogUserInfo,
+    usuarioInfo,
+
+    getBoards,
+    getUserBoard,
     editAdminBoard,
-    getAdminUsers,
-    idUsuario,
-    tipoUsuario,
+    changeCategory,
+
+    getAdminUsers, //user
+    infoManageUser,
+
     GestionUsuario,
     editAdminTypeUser,
 
@@ -152,26 +198,7 @@ export const useAdminStore = defineStore("admin", () => {
     FelicidadIndicador,
     Ciclo,
     Indicador,
-    Usuario,
     NombreCiclo,
-
-    gestionTablero,
-    getBoards,
-    getUserBoard,
-    usuariosTablero,
-    btnOpenUserInfo,
-
-    btnedit,
-
-    idUser,
-    nombreUser,
-    apellidoUser,
-    emailUser,
-    paisUser,
-    tipoUser,
-    categoriaUser,
-    descripcionUser,
-
-    idreq,
+    Usuario,
   };
 });

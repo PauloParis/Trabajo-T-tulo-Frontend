@@ -12,12 +12,46 @@
             @click="toggleLeftDrawer()"
           />
           <img
-            class="q-pl-xs"
+            class="q-pl-xs q-ml-sm q-mr-sm"
             src="src/assets/logocolor.png"
             width="35"
             height="40"
           />
           <q-toolbar-title> ÍNDICE DE FELICIDAD </q-toolbar-title>
+          <!-- <q-toolbar-title> -->
+          <q-btn size="sm" round icon="notifications" class="bg-dark">
+            <q-badge
+              v-if="accessStore.notificacion.length != 0"
+              floating
+              color="red"
+              rounded
+            />
+
+            <q-menu>
+              <q-list
+                v-for="(noti, index) in accessStore.notificacion"
+                :key="index"
+                style="width: 200px"
+                class="row justify-center"
+              >
+                <div class="q-pa-sm text-body2 text-blue-grey-14">
+                  Fuiste agregado al grupo de:
+                </div>
+                <div class="text-body1 text-primary text-weight-bold">
+                  {{ noti.tablero.Nombre_Tablero }}
+                </div>
+                <q-btn
+                  @click="notifyDone(noti.tablero.ID_Tablero)"
+                  style="width: 100%"
+                  class="bg-positive text-white q-ma-sm"
+                  size="sm"
+                  icon="done"
+                ></q-btn>
+              </q-list>
+            </q-menu>
+          </q-btn>
+
+          <!-- </q-toolbar-title> -->
         </q-toolbar>
       </q-header>
 
@@ -32,13 +66,7 @@
         <q-scroll-area class="fit">
           <q-list padding>
             <q-item-label header>Perfil</q-item-label>
-            <q-item
-              clickable
-              v-ripple
-              active-class="my-menu-link"
-              exact
-              to="/Account"
-            >
+            <q-item clickable v-ripple active-class="my-menu-link" exact to="/">
               <q-item-section avatar>
                 <q-icon name="account_circle" />
               </q-item-section>
@@ -176,11 +204,15 @@
 </template>
 
 <script setup>
-/* import EssentialLink from "components/EssentialLink.vue"; */
 import { useAccessStore } from "../stores/access-store";
 import { useRouter } from "vue-router";
 import { ref } from "@vue/reactivity";
 import { useBoardStore } from "src/stores/board-store";
+import { useNotify } from "src/composables/notifyHook";
+import { useQuasar } from "quasar";
+
+const { errorNotify } = useNotify();
+const $q = useQuasar();
 
 //Boton visualización drawer
 const leftDrawerOpen = ref(false);
@@ -189,7 +221,10 @@ function toggleLeftDrawer() {
 }
 
 const accessStore = useAccessStore();
+const boardStore = useBoardStore();
 const router = useRouter();
+
+accessStore.getInfoUser();
 
 const manageadmin = ref(false);
 
@@ -200,6 +235,17 @@ if (!sessionStorage.getItem("admin")) {
 const logout = async () => {
   await accessStore.logout();
   router.push("/login");
+};
+
+const notifyDone = async (idTablero) => {
+  try {
+    $q.loading.show();
+    await boardStore.updateNotify(idTablero);
+  } catch (error) {
+    errorNotify(error);
+  } finally {
+    $q.loading.hide();
+  }
 };
 </script>
 

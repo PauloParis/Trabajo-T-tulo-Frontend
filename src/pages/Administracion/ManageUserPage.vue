@@ -13,8 +13,6 @@
       <!-- Tabla -->
 
       <q-table
-        ref="tableRef"
-        tabindex="0"
         title="Lista de Usuarios"
         :rows="adminStore.GestionUsuario"
         :columns="columns"
@@ -32,7 +30,6 @@
               icon="visibility"
               @click="openModel(props.row)"
             >
-              <!--@click="editItem(props.row)"-->
             </q-btn>
           </q-td>
         </template>
@@ -122,7 +119,7 @@
                   <div
                     class="col-8 q-mb-sm text-body1 text-weight-regular text-indigo-10 text-uppercase"
                   >
-                    {{ adminStore.tipoUsuario }}
+                    {{ adminStore.infoManageUser.TipoUsuario }}
                   </div>
                 </div>
               </div>
@@ -146,7 +143,7 @@
                 icon="manage_accounts"
                 label="Administrador"
                 color="primary"
-                @click="ChangeTypeUser(type)"
+                @click="ChangeTypeUser()"
               ></q-btn>
               <q-btn
                 outline
@@ -155,7 +152,7 @@
                 label="Estandar"
                 color="primary"
                 class="col-5 col-sm-3"
-                @click="ChangeTypeUser(type)"
+                @click="ChangeTypeUser()"
               ></q-btn>
             </div>
           </q-card-section>
@@ -168,24 +165,27 @@
 <script setup>
 import { ref } from "vue";
 import { useAdminStore } from "src/stores/admin-store";
-
 import { useNotify } from "src/composables/notifyHook";
+import { useQuasar } from "quasar";
 
-const { successNotify, errorNotify } = useNotify();
 const adminStore = useAdminStore();
+const { successNotify, errorNotify } = useNotify();
+const $q = useQuasar();
 
 adminStore.getAdminUsers();
 
 const selected_row = ref({});
-const users = adminStore.GestionUsuario;
+const filter = ref("");
+const dialog = ref(false);
+const maximizedToggle = ref(true);
 
-const type = ref(null);
+const users = adminStore.GestionUsuario;
 
 const openModel = async (row) => {
   try {
     selected_row.value = row;
-    adminStore.idUsuario = selected_row.value.ID_Usuario;
-    adminStore.tipoUsuario = selected_row.value.Tipo_Usuario;
+    adminStore.infoManageUser.IdUsuario = selected_row.value.ID_Usuario;
+    adminStore.infoManageUser.TipoUsuario = selected_row.value.Tipo_Usuario;
     dialog.value = true;
   } catch (error) {
     errorNotify();
@@ -196,31 +196,24 @@ const vaciar = async () => {
   location.reload();
 };
 
-const ChangeTypeUser = async (type) => {
+const ChangeTypeUser = async () => {
   try {
-    if (adminStore.tipoUsuario === "Administrador") {
-      type = "Estandar";
-      const res = await adminStore.editAdminTypeUser(type);
+    $q.loading.show();
+    if (adminStore.infoManageUser.TipoUsuario === "Administrador") {
+      adminStore.infoManageUser.TipoUsuario = "Estandar";
+      await adminStore.editAdminTypeUser();
     } else {
-      type = "Administrador";
-      const res = await adminStore.editAdminTypeUser(type);
+      adminStore.infoManageUser.TipoUsuario = "Administrador";
+      await adminStore.editAdminTypeUser();
     }
 
     successNotify("Los Permisos fueron Actualizados Correctamente");
   } catch (error) {
-    errorNotify(error.error);
+    errorNotify(error);
+  } finally {
+    $q.loading.hide();
   }
 };
-
-const tableRef = ref(null);
-
-const navigationActive = ref(false);
-const pagination = ref({});
-const selected = ref([]);
-const filter = ref("");
-
-const dialog = ref(false);
-const maximizedToggle = ref(true);
 
 const columns = [
   {
@@ -229,8 +222,6 @@ const columns = [
     label: "Nombre",
     align: "left",
     field: "Nombre_Usuario",
-    //field: (row) => row.name,
-    //format: (val) => `${val}`,
     sortable: true,
   },
   {
@@ -267,14 +258,6 @@ const columns = [
     align: "center",
     field: (users) => users.ID_Usuario,
   },
-
-  /*{
-    name: "iron",
-    label: "Iron (%)",
-    field: "iron",
-    sortable: true,
-    sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
-  },*/
 ];
 </script>
 

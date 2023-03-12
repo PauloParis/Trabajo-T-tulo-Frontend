@@ -12,8 +12,6 @@
     <div class="q-pa-md">
       <!-- Tabla -->
       <q-table
-        ref="tableRef"
-        tabindex="0"
         title="Lista de Tableros"
         :rows="adminStore.gestionTablero"
         :columns="columns"
@@ -95,19 +93,19 @@
                       <div class="text-body1 blue-grey-10">Nombre:</div>
                     </div>
                     <div class="col-8 text-weight-regular text-grey-14">
-                      {{ adminStore.nombreTablero }}
+                      {{ adminStore.infoTablero.NombreTablero }}
                     </div>
                     <div class="col-4">
                       <div class="text-body1 blue-grey-10">Año:</div>
                     </div>
                     <div class="col-8 text-weight-regular text-grey-14">
-                      {{ adminStore.anio }}
+                      {{ adminStore.infoTablero.Anio }}
                     </div>
                     <div class="col-4">
                       <div class="text-body1 blue-grey-10">Semestre:</div>
                     </div>
                     <div class="col-8 text-weight-regular text-grey-14">
-                      {{ adminStore.semestre }}
+                      {{ adminStore.infoTablero.Semestre }}
                     </div>
                   </div>
                 </div>
@@ -130,19 +128,20 @@
                           >
                             <div
                               @click="
-                                infoUsuario(
-                                  (adminStore.btnOpenUserInfo = true),
-                                  (adminStore.idUser = user.ID_Usuario),
-                                  (adminStore.nombreUser = user.Nombre_Usuario),
-                                  (adminStore.apellidoUser = user.Apellido),
-                                  (adminStore.emailUser = user.Email),
-                                  (adminStore.paisUser = user.Pais),
-                                  (adminStore.tipoUser = user.Tipo_Usuario),
-                                  (adminStore.categoriaUser =
+                                (adminStore.openDialogUserInfo = true),
+                                  (adminStore.usuarioInfo.id = user.ID_Usuario),
+                                  (adminStore.usuarioInfo.name =
+                                    user.Nombre_Usuario),
+                                  (adminStore.usuarioInfo.surname =
+                                    user.Apellido),
+                                  (adminStore.usuarioInfo.email = user.Email),
+                                  (adminStore.usuarioInfo.country = user.Pais),
+                                  (adminStore.usuarioInfo.type =
+                                    user.Tipo_Usuario),
+                                  (adminStore.usuarioInfo.category =
                                     user.usuario_tableros[0].Categoria),
-                                  (adminStore.descripcionUser =
+                                  (adminStore.usuarioInfo.description =
                                     user.Descripcion)
-                                )
                               "
                             >
                               {{ user.Nombre_Usuario }} {{ user.Apellido }}
@@ -167,7 +166,7 @@
               size="md"
               label="Editar"
               color="primary"
-              @click="adminStore.btnedit = true"
+              @click="adminStore.openDialogEditBoard = true"
             >
             </q-btn>
           </div>
@@ -208,23 +207,16 @@ import deleteBoard from "src/components/board/deleteComponent.vue";
 import editBoard from "src/components/admin/editBoardComponent.vue";
 import infoUserComponent from "src/components/admin/InfoUserComponent.vue";
 import { useNotify } from "src/composables/notifyHook";
-
 import { useBoardStore } from "src/stores/board-store";
 import { useAdminStore } from "src/stores/admin-store";
-import { useAccessStore } from "src/stores/access-store";
 
 const { errorNotify } = useNotify();
 
-const tableRef = ref(null);
-const navigationActive = ref(false);
-const pagination = ref({});
-const selected = ref([]);
 const filter = ref("");
 const dialog = ref(false);
 const maximizedToggle = ref(true);
 const boardStore = useBoardStore();
 const adminStore = useAdminStore();
-const accessStore = useAccessStore();
 
 adminStore.getBoards();
 
@@ -232,30 +224,22 @@ const boards = adminStore.gestionTablero;
 
 const selected_row = ref({});
 
-const idreq = ref(null);
-
 const openModel = async (row) => {
   try {
     selected_row.value = row;
-    /* idreq.value = accessStore.idUsuario;
-    console.log(accessStore.idUsuario); */
-    adminStore.idTablero = selected_row.value.ID_Tablero;
-    boardStore.idTablero = selected_row.value.ID_Tablero;
-    adminStore.nombreTablero = selected_row.value.Nombre_Tablero;
-    adminStore.anio = selected_row.value.Anio;
-    adminStore.semestre = selected_row.value.Semestre;
-    adminStore.color = selected_row.value.Color;
-
-    await adminStore.getUserBoard(adminStore.idTablero);
-
+    adminStore.infoTablero = {
+      IdTablero: selected_row.value.ID_Tablero,
+      NombreTablero: selected_row.value.Nombre_Tablero,
+      Anio: selected_row.value.Anio,
+      Semestre: selected_row.value.Semestre,
+      Color: selected_row.value.Color,
+    };
+    await adminStore.getUserBoard(adminStore.infoTablero.IdTablero);
+    boardStore.infoTablero.IdTablero = adminStore.infoTablero.IdTablero;
     dialog.value = true;
   } catch (error) {
-    errorNotify();
+    errorNotify("No se pudo abrir la información del tablero");
   }
-};
-
-const infoUsuario = async (user) => {
-  console.log(user);
 };
 
 const vaciar = async () => {
@@ -269,8 +253,6 @@ const columns = [
     label: "Nombre Tablero",
     align: "left",
     field: "Nombre_Tablero",
-    //field: (boards) => boards.Nombre_Tablero,
-    //format: (val) => `${val}`,
     sortable: true,
   },
 
@@ -295,8 +277,6 @@ const columns = [
     align: "center",
     field: (boards) => boards.ID_Tablero,
   },
-
-  //sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
 ];
 </script>
 

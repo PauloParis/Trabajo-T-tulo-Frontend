@@ -1,7 +1,7 @@
 <template>
   <div class="">
-    <q-dialog v-model="boardStore.btnedit" persistent>
-      <q-card style="min-width: 400px">
+    <q-dialog v-model="boardStore.openDialogEditBoard" persistent>
+      <q-card style="width: 400px">
         <q-card-section>
           <div class="text-h6">Editar Tablero</div>
           <q-separator></q-separator>
@@ -9,7 +9,7 @@
 
         <q-form class="q-pa-md" @submit.prevent="editarTablero">
           <q-input
-            v-model="boardStore.NombreTablero"
+            v-model="boardStore.infoTablero.NombreTablero"
             label="Nombre"
             placeholder="Ingrese Nombre"
             :rules="[
@@ -21,7 +21,7 @@
           />
 
           <q-input
-            v-model.number="boardStore.Anio"
+            v-model.number="boardStore.infoTablero.Anio"
             type="number"
             label="Año"
             placeholder="Ingrese Año"
@@ -36,7 +36,7 @@
           />
 
           <q-input
-            v-model.number="boardStore.Semestre"
+            v-model.number="boardStore.infoTablero.Semestre"
             type="number"
             label="Semestre"
             placeholder="Ingrese Semestre"
@@ -54,7 +54,11 @@
           <br />
           <br />
           <div align="center">
-            <q-color v-model="boardStore.Color" class="" default-view="tune" />
+            <q-color
+              v-model="boardStore.infoTablero.Color"
+              class=""
+              default-view="tune"
+            />
           </div>
           <br />
           <q-card-actions align="right" class="text-primary">
@@ -62,7 +66,8 @@
               flat
               label="Cancelar"
               @click="
-                (boardStore.NombreTablero = ''), (boardStore.Semestre = '')
+                (boardStore.infoTablero.NombreTablero = ''),
+                  (boardStore.infoTablero.Semestre = '')
               "
               class="text-negative"
               v-close-popup
@@ -78,24 +83,25 @@
 <script setup>
 import { useBoardStore } from "src/stores/board-store";
 import { useNotify } from "src/composables/notifyHook";
+import { useQuasar } from "quasar";
 
-const { successNotify, errorNotify } = useNotify();
 const boardStore = useBoardStore();
+const { successNotify, errorNotify } = useNotify();
+const $q = useQuasar();
 
 const editarTablero = async () => {
   try {
-    const data = {
-      ID_Tablero: boardStore.idTablero,
-      Nombre_Tablero: boardStore.NombreTablero,
-      Anio: boardStore.Anio,
-      Semestre: boardStore.Semestre,
-      Color: boardStore.Color,
-    };
-
-    await boardStore.editBoard(data);
+    $q.loading.show();
+    await boardStore.editBoard();
     successNotify("Los Datos del Tablero fueron Actualizados Correctamente");
+    boardStore.infoTablero = {
+      NombreTablero: "",
+      Semestre: "",
+    };
   } catch (error) {
-    errorNotify(error.error);
+    errorNotify(error);
+  } finally {
+    $q.loading.hide();
   }
 };
 </script>

@@ -11,8 +11,6 @@
     <div class="q-pa-md">
       <!-- Tabla -->
       <q-table
-        ref="tableRef"
-        tabindex="0"
         title="Métricas"
         :columns="columns"
         :rows="adminStore.gestionTablero"
@@ -93,7 +91,7 @@
                       <div
                         class="q-ma-sm text-center text-weight-bold q-mt-xl text-h4 text-primary"
                       >
-                        {{ adminStore.felicidadTablero }} %
+                        {{ adminStore.infoTablero.FelicidadTablero }} %
                       </div>
                     </div>
                     <div class="col-6">
@@ -104,21 +102,23 @@
                           Nombre del Tablero:
                         </div>
                         <div class="col-6 q-pl-sm">
-                          {{ adminStore.nombreTablero }}
+                          {{ adminStore.infoTablero.NombreTablero }}
                         </div>
                         <div
                           class="col-6 text-left q-mb-sm text-weight-medium text-blue-grey-10"
                         >
                           Año:
                         </div>
-                        <div class="col-6 q-pl-sm">{{ adminStore.anio }}</div>
+                        <div class="col-6 q-pl-sm">
+                          {{ adminStore.infoTablero.Anio }}
+                        </div>
                         <div
                           class="col-6 text-left text-weight-medium text-blue-grey-10"
                         >
                           Semestre:
                         </div>
                         <div class="col-6 q-pl-sm">
-                          {{ adminStore.semestre }}
+                          {{ adminStore.infoTablero.Semestre }}
                         </div>
                       </div>
                     </div>
@@ -181,20 +181,17 @@ import { ref } from "vue";
 import { useAdminStore } from "src/stores/admin-store";
 import { useMetricStore } from "src/stores/metric-store";
 import { useNotify } from "src/composables/notifyHook";
-
 import CiclosGraphicComponent from "src/components/metric/CiclosGraphicComponent.vue";
 import indicadoresGraphicComponent from "src/components/metric/IndicadoresGraphicComponent.vue";
 import usuariosGraphicComponent from "src/components/metric/UsuariosGraphicComponent.vue";
 
+const adminStore = useAdminStore();
+const metricStore = useMetricStore();
 const { errorNotify } = useNotify();
-const loaded = ref(true);
-const tableRef = ref(null);
+
 const filter = ref("");
 const dialog = ref(false);
 const maximizedToggle = ref(true);
-
-const adminStore = useAdminStore();
-const metricStore = useMetricStore();
 
 adminStore.getBoards();
 
@@ -213,19 +210,19 @@ const vaciar = async () => {
   metricStore.GraficoCiclos = [];
   metricStore.GraficoUsuarios = [];
   metricStore.GraficoIndicadores = [];
-  //metricStore.GraficoIndicadores2 = [];
 };
 
 const openModel = async (row) => {
   try {
     selected_row.value = row;
-    adminStore.idTablero = selected_row.value.ID_Tablero;
-    adminStore.nombreTablero = selected_row.value.Nombre_Tablero;
-    adminStore.felicidadTablero = selected_row.value.Felicidad_Tablero;
-    adminStore.anio = selected_row.value.Anio;
-    adminStore.semestre = selected_row.value.Semestre;
+    adminStore.infoTablero.IdTablero = selected_row.value.ID_Tablero;
+    adminStore.infoTablero.NombreTablero = selected_row.value.Nombre_Tablero;
+    adminStore.infoTablero.FelicidadTablero =
+      selected_row.value.Felicidad_Tablero;
+    adminStore.infoTablero.Anio = selected_row.value.Anio;
+    adminStore.infoTablero.Semestre = selected_row.value.Semestre;
 
-    const res = await metricStore.getAdminMetric();
+    await metricStore.getAdminMetric();
     dialog.value = true;
   } catch (error) {
     errorNotify();
@@ -239,8 +236,6 @@ const columns = [
     label: "Nombre Tablero",
     align: "left",
     field: "Nombre_Tablero",
-    //field: (boards) => boards.Nombre_Tablero,
-    //format: (val) => `${val}`,
     sortable: true,
   },
   {
@@ -273,8 +268,6 @@ const columns = [
     align: "center",
     field: (boards) => boards.ID_Tablero,
   },
-
-  //sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
 ];
 </script>
 

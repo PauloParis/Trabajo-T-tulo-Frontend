@@ -65,8 +65,6 @@
                             class="q-ml-sm"
                           />
                         </div>
-
-                        <!-- <div class="col-4"></div> -->
                       </div>
                     </q-form>
                   </div>
@@ -85,20 +83,25 @@ import { ref } from "vue";
 import { useAccessStore } from "src/stores/access-store";
 import { useRouter } from "vue-router";
 import { useNotify } from "src/composables/notifyHook";
+import { useQuasar } from "quasar";
 
 const accessStore = useAccessStore();
 const router = useRouter();
 const { errorNotify } = useNotify();
+const $q = useQuasar();
 
 const email = ref("vescobar@utem.cl");
 const password = ref("123456");
 
 const handleSubmit = async () => {
   try {
+    $q.loading.show();
     await accessStore.access(email.value, password.value);
-    router.push("/account");
+    router.push("/");
   } catch (error) {
     errorNotify("Email o Contraseña Incorrecta");
+  } finally {
+    $q.loading.hide();
   }
 };
 </script>

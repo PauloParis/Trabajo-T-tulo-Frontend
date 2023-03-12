@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-dialog v-model="boardStore.openDialog" persistent>
+    <q-dialog v-model="boardStore.openDialogCreate" persistent>
       <q-card style="width: 400px">
         <div class="q-pa-md">
           <div class="text-h6">Crear {{ boardStore.Titulo }}</div>
@@ -9,7 +9,7 @@
 
         <q-form class="q-pa-md" @submit.prevent="funcionCrear">
           <q-input
-            v-model="boardStore.input"
+            v-model="input"
             label="Nombre"
             :rules="[
               (val) => (val && val.length > 0) || 'Porfavor Ingrese Nombre',
@@ -19,13 +19,7 @@
           <q-card-actions align="right" class="text-primary">
             <br />
             <q-btn flat label="Cancelar" class="text-negative" v-close-popup />
-            <q-btn
-              flat
-              label="Guardar"
-              type="submit"
-              :loading="loading"
-              v-close-popup
-            />
+            <q-btn flat label="Guardar" type="submit" v-close-popup />
           </q-card-actions>
         </q-form>
       </q-card>
@@ -37,43 +31,43 @@
 import { useNotify } from "src/composables/notifyHook";
 import { useBoardStore } from "src/stores/board-store";
 import { ref } from "vue";
-import { useRoute } from "vue-router";
+import { useQuasar } from "quasar";
 
-const { successNotify, errorNotify } = useNotify();
 const boardStore = useBoardStore();
-const route = useRoute();
-// valor pasar como props
+const { successNotify, errorNotify } = useNotify();
+const $q = useQuasar();
 
-const loading = ref(false);
-//const input = ref(null); //traer de la tienda
-const idtablero = localStorage.getItem("keyboard"); //route.params.idBoard;
+const input = ref(null);
+const idtablero = localStorage.getItem("keyboard");
 
 const funcionCrear = async () => {
   if (boardStore.Titulo == "Ciclo") {
     try {
-      await boardStore.createCycle(boardStore.input, idtablero);
+      $q.loading.show();
+      await boardStore.createCycle(input.value, idtablero);
       await boardStore.getCycles(idtablero);
       await boardStore.getIndicator(idtablero);
       boardStore.openDialog = false;
-      successNotify("Se creó el Ciclo con Éxito");
+      successNotify("Se creó el Ciclo con éxito");
     } catch (error) {
-      errorNotify(error.error);
+      errorNotify(error);
     } finally {
-      loading.value = false;
-      boardStore.input = null;
+      $q.loading.hide();
+      input.value = null;
     }
   }
   if (boardStore.Titulo == "Indicador") {
     try {
-      await boardStore.createIndicator(boardStore.input, idtablero);
+      $q.loading.show();
+      await boardStore.createIndicator(input.value, idtablero);
       await boardStore.getIndicator(idtablero);
       boardStore.openDialog = false;
-      successNotify("Se creó el Indicador con Éxito");
+      successNotify("Se creó el Indicador con éxito");
     } catch (error) {
-      errorNotify(error.error);
+      errorNotify(error);
     } finally {
-      loading.value = false;
-      boardStore.input = null;
+      $q.loading.hide();
+      input.value = null;
     }
   }
 };

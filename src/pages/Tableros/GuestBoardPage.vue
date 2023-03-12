@@ -12,9 +12,8 @@
     <div class="row">
       <!-- Buscador -->
       <q-input
-        class="col-4 q-ml-md float-right"
+        class="col-8 col-md-4 q-ml-md float-right"
         v-model="search"
-        disable
         placeholder="Buscar"
       >
       </q-input>
@@ -25,7 +24,7 @@
 
     <!-- Card -->
     <div class="row centrar-card">
-      <div v-for="(board, index) in boardStore.TablerosInvitado" :key="index">
+      <div v-for="(board, index) in tableros()" :key="index">
         <q-card flat bordered class="my-card q-ma-md bordes">
           <!-- Contenido card -->
           <q-card-section
@@ -60,8 +59,9 @@
                           ><q-btn
                             flat
                             @click="
-                              (boardStore.btndisassociate = true),
-                                (boardStore.idTablero = board.ID_Tablero)
+                              (boardStore.openDialogDisassociate = true),
+                                (boardStore.infoTablero.IdTablero =
+                                  board.ID_Tablero)
                             "
                           >
                             Desvincularse del Tablero</q-btn
@@ -84,25 +84,26 @@
               :to="{
                 name: 'board',
                 params: {
-                  idBoard: board.ID_Tablero,
                   nameBoard: board.Nombre_Tablero,
-                  happyBoard: board.Felicidad_Tablero,
+                },
+              }"
+            >
+              <!-- happyBoard: board.Felicidad_Tablero,
+                idBoard: board.ID_Tablero,
                   idName: board.usuario_tableros[0].usuario.ID_Usuario,
                   nameUser: board.usuario_tableros[0].usuario.Nombre_Usuario,
                   surnameUser: board.usuario_tableros[0].usuario.Apellido,
                   typeUser: board.usuario_tableros[0].usuario.Tipo_Usuario,
-                  userCategory: board.usuario_tableros[0].Categoria,
-                },
-              }"
-              ><q-btn
+                  userCategory: board.usuario_tableros[0].Categoria, -->
+              <q-btn
                 label="Abrir"
                 flat
                 style="width: 250px"
                 @click="
-                  (boardStore.NombreTablero = board.Nombre_Tablero),
-                    (boardStore.idTablero = board.ID_Tablero),
+                  (boardStore.infoTablero.NombreTablero = board.Nombre_Tablero),
+                    (boardStore.infoTablero.IdTablero = board.ID_Tablero),
                     (boardStore.felicidadTablero = board.Felicidad_Tablero),
-                    oldpage()
+                    Abrir()
                 "
               ></q-btn>
             </router-link>
@@ -118,7 +119,8 @@
 import disassociateBoard from "src/components/board/disassociateBoardComponent.vue";
 import { useBoardStore } from "src/stores/board-store";
 import { useAccessStore } from "src/stores/access-store";
-import { ref } from "@vue/reactivity";
+import { ref } from "vue";
+import socket from "src/stores/socket-store";
 
 const boardStore = useBoardStore();
 const accessStore = useAccessStore();
@@ -126,15 +128,23 @@ const accessStore = useAccessStore();
 boardStore.getguestBoards();
 accessStore.getInfoUser();
 
-const search = ref("Buscar");
+const search = ref("");
 
 //ARREGLAR
-const oldpage = async () => {
-  boardStore.oldURL = window.location.href;
-  localStorage.setItem("keyboard", boardStore.idTablero);
+const Abrir = () => {
+  localStorage.setItem("keyboard", boardStore.infoTablero.IdTablero);
   localStorage.setItem("happyboard", boardStore.felicidadTablero);
-  localStorage.setItem("board", boardStore.NombreTablero);
+  localStorage.setItem("board", boardStore.infoTablero.NombreTablero);
+  localStorage.setItem("keyuser", accessStore.infoUsuario.idUsuario);
+
+  socket.connect();
 };
+
+function tableros() {
+  return boardStore.TablerosInvitado.filter((board) =>
+    board.Nombre_Tablero.toLowerCase().includes(search.value.toLowerCase())
+  );
+}
 </script>
 
 <style lang="scss" scoped>

@@ -46,24 +46,32 @@ const funcionEliminar = async () => {
   if (boardStore.TituloDelete == "Tablero") {
     $q.loading.show();
     try {
-      await boardStore.deleteBoard(boardStore.idTablero);
+      await boardStore.deleteBoard();
       boardStore.openDialogDelete = false;
       successNotify("El Tablero fue Eliminado Correctamente");
+      //vaciar localstorage
+      if (
+        boardStore.infoTablero.IdTablero == localStorage.getItem("keyboard")
+      ) {
+        localStorage.removeItem("keyuser");
+        localStorage.removeItem("happyboard");
+        localStorage.removeItem("board");
+        localStorage.removeItem("keyboard");
+      }
     } catch (error) {
-      errorNotify(error.error);
+      errorNotify(error);
     } finally {
       $q.loading.hide();
-      /* location.reload(); */
     }
   }
   if (boardStore.TituloDelete == "Ciclo") {
     $q.loading.show();
     try {
-      await boardStore.deleteCycle(boardStore.idCiclo);
+      await boardStore.deleteCycle();
       boardStore.openDialogDelete = false;
       successNotify("El Ciclo fue Eliminado Correctamente");
     } catch (error) {
-      errorNotify(error.error);
+      errorNotify(error);
     } finally {
       $q.loading.hide();
     }
@@ -71,12 +79,12 @@ const funcionEliminar = async () => {
   if (boardStore.TituloDelete == "Indicador") {
     $q.loading.show();
     try {
-      await boardStore.deleteIndicator(boardStore.idIndicador);
+      await boardStore.deleteIndicator(boardStore.infoIndicador.IdIndicador);
       boardStore.openDialogDelete = false;
       boardStore.btnviewindicator = false;
       successNotify("El Indicador fue Eliminado Correctamente");
     } catch (error) {
-      errorNotify(error.error);
+      errorNotify(error);
     } finally {
       $q.loading.hide();
     }

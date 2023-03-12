@@ -2,8 +2,8 @@
   <div class="q-pa-md"></div>
 
   <div class="q-pa-md q-gutter-sm">
-    <q-dialog v-model="boardStore.btndisassociate" persistent>
-      <q-card style="width: 500px">
+    <q-dialog v-model="boardStore.openDialogDisassociate" persistent>
+      <q-card style="width: 400px">
         <q-card-section>
           <div class="text-h6">Desvincularse del Tablero</div>
           <q-separator></q-separator>
@@ -29,20 +29,28 @@
 import { useBoardStore } from "src/stores/board-store";
 import { useNotify } from "src/composables/notifyHook";
 import { useAccessStore } from "src/stores/access-store";
+import { useQuasar } from "quasar";
 
-const { successNotify, errorNotify } = useNotify();
 const boardStore = useBoardStore();
 const accessStore = useAccessStore();
+const { successNotify, errorNotify } = useNotify();
+const $q = useQuasar();
 
 const disassociate = async () => {
   try {
-    await boardStore.disassociateBoard(
-      boardStore.idTablero,
-      accessStore.idUsuario
-    );
+    $q.loading.show();
+    await boardStore.disassociateBoard(accessStore.infoUsuario.idUsuario);
     successNotify("Fuiste Desvinculado del Tablero Correctamente");
+    if (boardStore.infoTablero.IdTablero == localStorage.getItem("keyboard")) {
+      localStorage.removeItem("keyuser");
+      localStorage.removeItem("happyboard");
+      localStorage.removeItem("board");
+      localStorage.removeItem("keyboard");
+    }
   } catch (error) {
-    errorNotify(error.error);
+    errorNotify(error);
+  } finally {
+    $q.loading.hide();
   }
 };
 </script>

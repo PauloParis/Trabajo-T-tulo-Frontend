@@ -25,27 +25,27 @@
                 <q-separator></q-separator>
               </q-card-section>
 
-              <div class="q-pa-md column items-center">
-                <label class="col text-h6 text-red">
+              <div class="q-pa-md">
+                <div class="row justify-center text-h6 text-red">
                   ¿Está Seguro de ELiminar la Cuenta?
-                </label>
+                </div>
                 <br />
-                <p class="col text-body1">
+                <div class="text-body1 q-mb-md row justify-center">
                   La eliminación de los Datos es permanente y NO será Posible
                   Recuperar la información de Cuenta.
-                </p>
-                <p class="col text-body1">
+                </div>
+                <div class="text-body1 q-mb-md row justify-center">
                   Así también, la Información de los Tableros Creados,
                   Invitaciones Recibidas, Evaluaciones o cualquier otra acción
                   relacionada en la plataforma, se eliminara por Completo.
-                </p>
-                <p class="col text-body1 text-green">
+                </div>
+                <div class="text-body1 text-green row justify-center">
                   Recuerde que, si elimina sus tableros, también se eliminarán
                   para aquellos usuarios colaboradores de estos.
-                </p>
+                </div>
               </div>
 
-              <q-card-actions align="right" class="text-primary">
+              <q-card-actions align="right" class="text-primary q-mb-sm">
                 <br />
                 <q-btn
                   flat
@@ -74,7 +74,7 @@
               </q-card-section>
 
               <div class="q-pa-md column items-center">
-                <label class="col text-h6 text-red">
+                <label class="col text-body1 text-red">
                   ¿Está Realmente Seguro de ELiminar la Cuenta?
                 </label>
                 <br />
@@ -108,21 +108,27 @@ import { ref } from "@vue/reactivity";
 import { useAccessStore } from "src/stores/access-store";
 import { useNotify } from "src/composables/notifyHook";
 import { useRouter } from "vue-router";
+import { useQuasar } from "quasar";
 
+const accessStore = useAccessStore();
 const router = useRouter();
 const { successNotify, errorNotify } = useNotify();
+const $q = useQuasar();
+
 const promt = ref(false);
 const promt2 = ref(false);
-const accessStore = useAccessStore();
 
 const EliminarCuenta = async () => {
   try {
-    const res = await accessStore.deleteUser();
-    successNotify("Se Elimino la Cuenta con Exito FFFFFFFFF");
+    $q.loading.show();
+    await accessStore.deleteUser();
+    successNotify("Se elimino la cuenta con éxito");
     accessStore.logout();
     router.push("/login");
   } catch (error) {
-    errorNotify(error.error);
+    errorNotify(error);
+  } finally {
+    $q.loading.hide();
   }
 };
 </script>

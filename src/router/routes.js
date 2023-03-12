@@ -13,18 +13,12 @@ const routes = [
   },
   //Login-Registro
   {
-    path: "/",
-    component: () => import("src/layouts/LoginLayout.vue"),
-    children: [
-      {
-        path: "/login",
-        component: () => import("pages/Acceso/LoginPage.vue"),
-      },
-      {
-        path: "/register",
-        component: () => import("pages/Acceso/RegisterPage.vue"),
-      },
-    ],
+    path: "/login",
+    component: () => import("pages/Acceso/LoginPage.vue"),
+  },
+  {
+    path: "/register",
+    component: () => import("pages/Acceso/RegisterPage.vue"),
   },
 
   //Administrador
@@ -33,7 +27,7 @@ const routes = [
     component: () => import("src/layouts/AdmLayout.vue"),
     children: [
       {
-        path: "/account",
+        path: "/",
         component: () => import("pages/IndexPage.vue"),
         meta: {
           auth: true,

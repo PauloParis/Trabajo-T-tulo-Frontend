@@ -1,7 +1,7 @@
 <template>
   <div>
-    <q-dialog v-model="adminStore.btnedit" persistent>
-      <q-card style="min-width: 400px">
+    <q-dialog v-model="adminStore.openDialogEditBoard" persistent>
+      <q-card style="width: 400px">
         <q-card-section>
           <div class="text-h6">Editar Tablero</div>
           <q-separator></q-separator>
@@ -9,7 +9,7 @@
 
         <q-form class="q-pa-md" @submit.prevent="editarTablero">
           <q-input
-            v-model="adminStore.nombreTablero"
+            v-model="adminStore.infoTablero.NombreTablero"
             label="Nombre"
             placeholder="Ingrese Nombre"
             :rules="[
@@ -21,7 +21,7 @@
           />
 
           <q-input
-            v-model="adminStore.anio"
+            v-model="adminStore.infoTablero.Anio"
             type="number"
             label="Año"
             placeholder="Ingrese Año"
@@ -36,7 +36,7 @@
           />
 
           <q-input
-            v-model="adminStore.semestre"
+            v-model="adminStore.infoTablero.Semestre"
             type="number"
             label="Semestre"
             placeholder="Ingrese Semestre"
@@ -61,23 +61,23 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useBoardStore } from "src/stores/board-store";
 import { useNotify } from "src/composables/notifyHook";
 import { useAdminStore } from "src/stores/admin-store";
+import { useQuasar } from "quasar";
 
-const { successNotify, errorNotify } = useNotify();
-//const prompt = ref(false);
-
-const storeBoard = useBoardStore();
 const adminStore = useAdminStore();
+const { successNotify, errorNotify } = useNotify();
+const $q = useQuasar();
 
 const editarTablero = async () => {
   try {
+    $q.loading.show();
     await adminStore.editAdminBoard();
     successNotify("El Datos del tablero fueron Actualizados Correctamente");
   } catch (error) {
-    errorNotify(error.error);
+    errorNotify(error);
+  } finally {
+    $q.loading.hide();
   }
 };
 </script>

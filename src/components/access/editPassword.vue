@@ -1,11 +1,6 @@
 <template>
   <div>
-    <q-btn
-      icon="key"
-      color="yellow-9"
-      @click="prompt = true"
-      style="width: 100%"
-    >
+    <q-btn icon="key" color="accent" @click="prompt = true" style="width: 100%">
       <div class="q-pl-sm">Cambiar Contraseña</div></q-btn
     >
   </div>
@@ -20,7 +15,7 @@
 
         <q-form class="q-pa-md" @submit.prevent="editarContrasena">
           <q-input
-            v-model="accessStore.PasswordActual"
+            v-model="accessStore.password.PasswordActual"
             :type="isPwd ? 'password' : 'text'"
             label="Contraseña Actual"
             hint=""
@@ -39,7 +34,7 @@
           </q-input>
 
           <q-input
-            v-model="accessStore.PasswordNueva"
+            v-model="accessStore.password.PasswordNueva"
             :type="isPwd2 ? 'password' : 'text'"
             label="Nueva Contraseña (Mínimo 6 caracteres)"
             hint=""
@@ -58,13 +53,15 @@
           </q-input>
 
           <q-input
-            v-model="accessStore.RePassword"
+            v-model="accessStore.password.RePassword"
             :type="isPwd3 ? 'password' : 'text'"
             label="Repetir Nueva Contraseña"
             hint=""
             :rules="[
               (val) =>
-                (val && val.length > 5 && val == accessStore.PasswordNueva) ||
+                (val &&
+                  val.length > 5 &&
+                  val == accessStore.password.PasswordNueva) ||
                 'Las Contraseñas no Coinciden',
             ]"
           >
@@ -96,49 +93,44 @@
 <script setup>
 import { ref } from "vue";
 import { useAccessStore } from "src/stores/access-store";
+import { useNotify } from "src/composables/notifyHook";
 import { useQuasar } from "quasar";
 
-const $q = useQuasar();
+const { successNotify, errorNotify } = useNotify();
 const accessStore = useAccessStore();
+7;
+const $q = useQuasar();
 
 const prompt = ref(false);
-
 const isPwd = ref(true);
 const isPwd2 = ref(true);
 const isPwd3 = ref(true);
 
 function msgPass() {
-  if (accessStore.PasswordNueva !== accessStore.RePassword) {
-    $q.notify({
-      type: "negative",
-      message: "Error - Las Contraseñas No Coinciden",
-    });
+  if (accessStore.password.PasswordNueva !== accessStore.password.RePassword) {
+    errorNotify("Las Contraseñas No Coinciden");
   }
   if (
-    accessStore.PasswordActual == null ||
-    accessStore.PasswordNueva == null ||
-    accessStore.RePassword == null
+    accessStore.password.PasswordActual == null ||
+    accessStore.password.PasswordNueva == null ||
+    accessStore.password.RePassword == null
   ) {
-    $q.notify({
-      type: "negative",
-      message: "Error - Por favor Complete todos los Campos",
-    });
+    errorNotify("Por favor Complete todos los Campos");
   }
 }
 
 const editarContrasena = async () => {
   try {
+    $q.loading.show();
     await accessStore.editPassUser();
-
-    $q.notify({
-      type: "positive",
-      message: "La Contraseña fue Actualizada Correctamente",
-    });
+    successNotify("La Contraseña fue Actualizada Correctamente");
+    accessStore.password.PasswordActual = "";
+    accessStore.password.PasswordNueva = "";
+    accessStore.password.RePassword = "";
   } catch (error) {
-    $q.notify({
-      type: "negative",
-      message: error.error,
-    });
+    errorNotify(error);
+  } finally {
+    $q.loading.hide();
   }
 };
 </script>

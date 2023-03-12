@@ -1,7 +1,7 @@
 <template>
-  <div class="q-pa-md q-gutter-sm">
-    <q-dialog v-model="boardStore.btninvitar" persistent>
-      <q-card style="min-width: 400px">
+  <div class="q-pa-md">
+    <q-dialog v-model="boardStore.openDialogInvite" persistent>
+      <q-card style="width: 400px">
         <div class="q-pa-md">
           <div class="text-h6">Invitar Usuario</div>
           <q-separator></q-separator>
@@ -9,7 +9,7 @@
 
         <q-form class="q-pa-md" @submit.prevent="InvitarUsuario">
           <q-input
-            v-model="boardStore.sendEmail"
+            v-model="email"
             label="Correo"
             placeholder="Ingrese Correo"
             :rules="[
@@ -22,7 +22,13 @@
           <br />
           <q-card-actions align="right" class="text-primary">
             <br />
-            <q-btn flat label="Cancelar" class="text-negative" v-close-popup />
+            <q-btn
+              flat
+              label="Cancelar"
+              class="text-negative"
+              @click="(email = ''), (boardStore.openDialog = false)"
+              v-close-popup
+            />
             <q-btn flat label="Invitar" type="submit" v-close-popup />
           </q-card-actions>
         </q-form>
@@ -34,22 +40,27 @@
 <script setup>
 import { useBoardStore } from "src/stores/board-store";
 import { useNotify } from "src/composables/notifyHook";
-import { useRoute } from "vue-router";
+import { ref } from "vue";
+import { useQuasar } from "quasar";
 
-const { successNotify, errorNotify } = useNotify();
 const boardStore = useBoardStore();
+const { successNotify, errorNotify } = useNotify();
+const $q = useQuasar();
 
-const route = useRoute();
 const idtablero = localStorage.getItem("keyboard");
+const email = ref("");
 
 const InvitarUsuario = async () => {
   try {
-    const Email = boardStore.sendEmail;
-    const res = await boardStore.invitationBoard(Email, idtablero);
+    $q.loading.show();
+    await boardStore.invitationBoard(email.value, idtablero);
     successNotify("El usuario fue invitado correctamente");
-    boardStore.sendEmail = null;
+    email.value = "";
+    boardStore.openDialog = false;
   } catch (error) {
-    errorNotify(error.error);
+    errorNotify(error);
+  } finally {
+    $q.loading.hide();
   }
 };
 </script>

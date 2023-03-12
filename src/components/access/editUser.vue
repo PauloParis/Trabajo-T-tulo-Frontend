@@ -21,22 +21,20 @@
         <div class="q-pa-md">
           <q-form @submit.prevent="editarUsuario">
             <q-input
-              v-model="accessStore.NombreUsuario"
+              v-model="accessStore.infoUsuario.NombreUsuario"
               label="Nombre"
               placeholder="Ingrese Nombre"
               hint=""
-              :dense="dense"
               :rules="[
                 (val) =>
                   (val && val.length > 0) || 'Porfavor Escriba un Nombre',
               ]"
             />
             <q-input
-              v-model="accessStore.Apellido"
+              v-model="accessStore.infoUsuario.Apellido"
               label="Apellido"
               placeholder="Ingrese Apellido"
               hint=""
-              :dense="dense"
               :rules="[
                 (val) =>
                   (val && val.length > 0) || 'Porfavor Seleccione un País',
@@ -44,11 +42,10 @@
             />
 
             <q-select
-              v-model="accessStore.Pais"
+              v-model="accessStore.infoUsuario.Pais"
               :options="paises"
               label="Escoja País"
               hint=""
-              :dense="dense"
               :rules="[
                 (val) =>
                   (val && val.length > 0) || 'Porfavor Seleccione un País',
@@ -62,9 +59,8 @@
             <q-editor
               min-height="5rem"
               max-width="10rem"
-              v-model="accessStore.Descripcion"
+              v-model="accessStore.infoUsuario.Descripcion"
               label="Descripción"
-              :dense="dense"
             />
 
             <q-card-actions align="right" class="text-primary">
@@ -86,13 +82,13 @@
 <script setup>
 import { ref } from "vue";
 import { useAccessStore } from "src/stores/access-store";
+import { useNotify } from "src/composables/notifyHook";
 import { useQuasar } from "quasar";
 
-const $q = useQuasar();
 const accessStore = useAccessStore();
-
+const { successNotify, errorNotify } = useNotify();
+const $q = useQuasar();
 const prompt = ref(false);
-const dense = ref(false);
 
 const paises = [
   "Afganistán",
@@ -294,16 +290,13 @@ const paises = [
 
 const editarUsuario = async () => {
   try {
+    $q.loading.show();
     await accessStore.editInfoUser();
-    $q.notify({
-      type: "positive",
-      message: "El Datos fueron Actualizados Correctamente",
-    });
+    successNotify("El Datos fueron Actualizados Correctamente");
   } catch (error) {
-    $q.notify({
-      type: "negative",
-      message: error.error,
-    });
+    errorNotify(error);
+  } finally {
+    $q.loading.hide();
   }
 };
 </script>

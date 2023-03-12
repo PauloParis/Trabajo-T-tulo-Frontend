@@ -1,7 +1,7 @@
 <template>
   <div>
-    <q-dialog v-model="adminStore.btnOpenUserInfo" persistent>
-      <q-card style="min-width: 400px">
+    <q-dialog v-model="adminStore.openDialogUserInfo" persistent>
+      <q-card style="width: 400px">
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Información Usuario</div>
           <q-space />
@@ -14,25 +14,26 @@
             Nombre:
           </div>
           <div class="col-6 text-body1 blue-grey-14">
-            {{ adminStore.nombreUser }} {{ adminStore.apellidoUser }}
+            {{ adminStore.usuarioInfo.name }}
+            {{ adminStore.usuarioInfo.surname }}
           </div>
           <div class="col-6 q-pb-sm text-body1 text-weight-medium blue-grey-10">
             Email:
           </div>
           <div class="col-6 text-body1 blue-grey-14">
-            {{ adminStore.emailUser }}
+            {{ adminStore.usuarioInfo.email }}
           </div>
           <div class="col-6 q-pb-sm text-body1 text-weight-medium blue-grey-10">
             Pais:
           </div>
           <div class="col-6 text-body1 blue-grey-14">
-            {{ adminStore.paisUser }}
+            {{ adminStore.usuarioInfo.country }}
           </div>
           <div class="col-6 q-pb-sm text-body1 text-weight-medium blue-grey-10">
             Tipo de Usuario:
           </div>
           <div class="col-6 text-body1 blue-grey-14">
-            {{ adminStore.tipoUser }}
+            {{ adminStore.usuarioInfo.type }}
           </div>
           <div
             class="col-6 q-pb-sm text-body1 text-weight-medium blue-grey-10 text-primary"
@@ -42,7 +43,7 @@
           <div
             class="col-6 text-body1 blue-grey-14 text-uppercase text-weight-medium text-primary"
           >
-            {{ adminStore.categoriaUser }}
+            {{ adminStore.usuarioInfo.category }}
           </div>
           <div class="col-6 q-mb-sm text-body1 text-weight-medium blue-grey-10">
             Descripción:
@@ -53,13 +54,21 @@
               :bar-style="barStyle"
               style="height: 80px"
             >
-              <div v-html="adminStore.descripcionUser"></div>
+              <div v-html="adminStore.usuarioInfo.description"></div>
             </q-scroll-area>
           </div>
         </div>
-        <q-card-actions align="right" class="text-primary q-mb-lg">
+        <q-card-actions class="q-mb-lg">
+          <q-btn
+            @click="cambiarCategoria"
+            label="Cambiar Categoria"
+            style="width: 100%"
+            class="bg-primary text-white q-mb-md"
+          ></q-btn>
+
           <q-btn
             @click="desvincularUsuario"
+            class="text-white no-margin bg-negative"
             label="Desvincular"
             style="width: 100%"
             outline
@@ -70,7 +79,7 @@
                 toda su información
               </div>
             </q-tooltip></q-btn
-          >>
+          >
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -78,14 +87,15 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
 import { useNotify } from "src/composables/notifyHook";
 import { useAdminStore } from "src/stores/admin-store";
 import { useBoardStore } from "src/stores/board-store";
+import { useQuasar } from "quasar";
 
-const { successNotify, errorNotify } = useNotify();
 const adminStore = useAdminStore();
 const boardSore = useBoardStore();
+const { successNotify, errorNotify } = useNotify();
+const $q = useQuasar();
 
 const thumbStyle = {
   right: "4px",
@@ -103,13 +113,34 @@ const barStyle = {
   opacity: 0.2,
 };
 
+const cambiarCategoria = async () => {
+  try {
+    $q.loading.show();
+    if (adminStore.usuarioInfo.category === "Creador") {
+      adminStore.usuarioInfo.category = "Invitado";
+      await adminStore.changeCategory();
+    } else {
+      adminStore.usuarioInfo.category = "Creador";
+      await adminStore.changeCategory();
+    }
+    successNotify("Se Cambio la categoria del usuario");
+  } catch (error) {
+    errorNotify(error);
+  } finally {
+    $q.loading.hide();
+  }
+};
+
 const desvincularUsuario = async () => {
   try {
-    await boardSore.disassociateBoard(adminStore.idTablero, adminStore.idUser);
-    //getUserBoard(adminStore.idTablero);
+    $q.loading.show();
+    (boardSore.infoTablero.IdTablero = adminStore.infoTablero.IdTablero),
+      await boardSore.disassociateBoard(adminStore.usuarioInfo.id);
     successNotify("Se desvinculó al usuario del tablero");
   } catch (error) {
-    errorNotify(error.error);
+    errorNotify(error);
+  } finally {
+    $q.loading.hide();
   }
 };
 </script>

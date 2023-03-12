@@ -98,34 +98,6 @@ const data_radar = {
   datasets: result.value,
 };
 
-/* const data = {
-  labels: ["Drinking", "Sleeping", "ajajaj", "probando"],
-  datasets: [
-    {
-      label: "My First Dataset",
-      data: [90, 81, 65, 12],
-      fill: true,
-      backgroundColor: "rgba(255, 99, 132, 0.2)",
-      borderColor: "rgb(255, 99, 132)",
-      pointBackgroundColor: "rgb(255, 99, 132)",
-      pointBorderColor: "#fff",
-      pointHoverBackgroundColor: "#fff",
-      pointHoverBorderColor: "rgb(255, 99, 132)",
-    },
-    {
-      label: "My Second Dataset",
-      data: [19, 100, 34],
-      fill: true,
-      backgroundColor: "rgba(54, 162, 235, 0.2)",
-      borderColor: "rgb(54, 162, 235)",
-      pointBackgroundColor: "rgb(54, 162, 235)",
-      pointBorderColor: "#fff",
-      pointHoverBackgroundColor: "#fff",
-      pointHoverBorderColor: "rgb(54, 162, 235)",
-    },
-  ],
-}; */
-
 const options = {
   plugins: {
     datalabels: {
@@ -133,7 +105,6 @@ const options = {
       anchor: "end",
       align: "right",
       formatter: (value) => {
-        /* https://blog.imind.jp/entry/2019/07/19/210646 */
         return "  " + value + " %";
       },
     },

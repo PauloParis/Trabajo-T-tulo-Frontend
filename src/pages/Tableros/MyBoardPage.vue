@@ -19,14 +19,14 @@
           class="text-h6"
           outline
           rounded
-          @click="boardStore.btncreate = true"
+          @click="boardStore.openDialogCreate = true"
         ></q-btn>
 
         <createBoard />
       </div>
       <div class="col-8 q-ml-md" style="width: 50%">
         <!-- Buscador -->
-        <q-input v-model="search" placeholder="Buscar" disable></q-input>
+        <q-input v-model="search" placeholder="Buscar"></q-input>
       </div>
     </div>
 
@@ -35,7 +35,7 @@
 
     <!-- Card -->
     <div class="row items-center centrar-card">
-      <div v-for="(board, index) in boardStore.MisTableros" :key="index">
+      <div v-for="(board, index) in tableros()" :key="index">
         <q-card flat bordered class="my-card q-ma-md bordes">
           <!-- Contenido card -->
           <q-card-section
@@ -71,13 +71,15 @@
                           ><q-btn
                             flat
                             @click="
-                              (boardStore.btnedit = true),
-                                (boardStore.NombreTablero =
+                              (boardStore.openDialogEditBoard = true),
+                                (boardStore.infoTablero.NombreTablero =
                                   board.Nombre_Tablero),
-                                (boardStore.Semestre = board.Semestre),
-                                (boardStore.Anio = board.Anio),
-                                (boardStore.Color = board.Color),
-                                (boardStore.idTablero = board.ID_Tablero)
+                                (boardStore.infoTablero.Semestre =
+                                  board.Semestre),
+                                (boardStore.infoTablero.Anio = board.Anio),
+                                (boardStore.infoTablero.Color = board.Color),
+                                (boardStore.infoTablero.IdTablero =
+                                  board.ID_Tablero)
                             "
                           >
                             Editar Tablero
@@ -92,7 +94,8 @@
                             flat
                             @click="
                               (boardStore.openDialogDelete = true),
-                                (boardStore.idTablero = board.ID_Tablero),
+                                (boardStore.infoTablero.IdTablero =
+                                  board.ID_Tablero),
                                 (boardStore.TituloDelete = 'Tablero')
                             "
                             >Eliminar Tablero</q-btn
@@ -115,26 +118,27 @@
               :to="{
                 name: 'board',
                 params: {
-                  idBoard: board.ID_Tablero,
                   nameBoard: board.Nombre_Tablero,
-                  happyBoard: board.Felicidad_Tablero,
-                  idName: board.usuario_tableros[0].usuario.ID_Usuario,
+                },
+              }"
+            >
+              <!-- idName: board.usuario_tableros[0].usuario.ID_Usuario,
+                idBoard: board.ID_Tablero,
+                happyBoard: board.Felicidad_Tablero,
                   nameUser: board.usuario_tableros[0].usuario.Nombre_Usuario,
                   surnameUser: board.usuario_tableros[0].usuario.Apellido,
                   typeUser: board.usuario_tableros[0].usuario.Tipo_Usuario,
-                  userCategory: board.usuario_tableros[0].Categoria,
-                },
-              }"
-              ><q-btn
+                  userCategory: board.usuario_tableros[0].Categoria, -->
+              <q-btn
                 class="my-card"
                 style="height: 40px"
                 flat
                 label="Abrir"
                 @click="
-                  (boardStore.NombreTablero = board.Nombre_Tablero),
-                    (boardStore.idTablero = board.ID_Tablero),
+                  (boardStore.infoTablero.NombreTablero = board.Nombre_Tablero),
+                    (boardStore.infoTablero.IdTablero = board.ID_Tablero),
                     (boardStore.felicidadTablero = board.Felicidad_Tablero),
-                    oldpage()
+                    Abrir()
                 "
               ></q-btn>
             </router-link>
@@ -151,25 +155,31 @@
 import createBoard from "src/components/board/createBoardComponent.vue";
 import editBoard from "src/components/board/editBoardComponent.vue";
 import deleteComponent from "src/components/board/deleteComponent.vue";
-
 import { useBoardStore } from "src/stores/board-store";
 import { useAccessStore } from "src/stores/access-store";
 import { ref } from "vue";
+import socket from "src/stores/socket-store";
 
 const boardStore = useBoardStore();
 const accessStore = useAccessStore();
 boardStore.getMyBoard();
 accessStore.getInfoUser();
 
-const search = ref("Buscar");
+const search = ref("");
 
-//ARREGLAR
-const oldpage = async () => {
-  boardStore.oldURL = window.location.href;
-  localStorage.setItem("keyboard", boardStore.idTablero);
+const Abrir = () => {
+  localStorage.setItem("keyboard", boardStore.infoTablero.IdTablero);
   localStorage.setItem("happyboard", boardStore.felicidadTablero);
-  localStorage.setItem("board", boardStore.NombreTablero);
+  localStorage.setItem("board", boardStore.infoTablero.NombreTablero);
+  localStorage.setItem("keyuser", accessStore.infoUsuario.idUsuario);
+  socket.connect();
 };
+
+function tableros() {
+  return boardStore.MisTableros.filter((board) =>
+    board.Nombre_Tablero.toLowerCase().includes(search.value.toLowerCase())
+  );
+}
 </script>
 
 <style lang="scss" scoped>

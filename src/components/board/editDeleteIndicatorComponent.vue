@@ -1,6 +1,6 @@
 <template>
-  <div class="q-pa-md q-gutter-sm">
-    <q-dialog v-model="boardStore.btnviewindicator">
+  <div class="q-pa-md">
+    <q-dialog v-model="boardStore.openDialogEditDelete">
       <q-card style="width: 400px">
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Editar o Eliminar Indicador</div>
@@ -16,7 +16,7 @@
           <div class="col-10">
             <!-- input con el nomnbre del indicador -->
             <q-input
-              v-model="boardStore.NombreIndicador"
+              v-model="boardStore.infoIndicador.NombreIndicador"
               label="Nombre"
               placeholder="Ingrese Nombre"
               :rules="[
@@ -61,46 +61,23 @@
 <script setup>
 import { useBoardStore } from "src/stores/board-store";
 import deleteComponent from "src/components/board/deleteComponent.vue";
-
 import { useNotify } from "src/composables/notifyHook";
-import { useRoute } from "vue-router";
-
-import socket from "src/stores/socket-store";
-
-const { successNotify, errorNotify } = useNotify();
-const route = useRoute();
+import { useQuasar } from "quasar";
 
 const boardStore = useBoardStore();
+const { successNotify, errorNotify } = useNotify();
+const $q = useQuasar();
 
 const editarIndicador = async () => {
   try {
-    const data = {
-      ID_Indicador: boardStore.idIndicador,
-      Nombre_Indicador: boardStore.NombreIndicador,
-    };
-    await boardStore.editIndicator(data);
-    await boardStore.getIndicator(boardStore.idTablero);
+    $q.loading.show();
+    await boardStore.editIndicator();
+    await boardStore.getIndicator(boardStore.infoTablero.IdTablero);
     successNotify("El datos del indicador fueron actualizados correctamente");
   } catch (error) {
-    errorNotify(error.error);
+    errorNotify(error);
+  } finally {
+    $q.loading.hide();
   }
 };
-
-const props = defineProps({
-  idBoard: Number,
-  nameBoard: String,
-  happyBoard: Number,
-  idName: Number,
-  nameUser: String,
-  surnameUser: String,
-  typeUser: String,
-  userCategory: String,
-});
-
-socket.on("indicadores", (msg) => {
-  boardStore.MisIndicadores.push(msg);
-});
-socket.on("eliminarIndicador", (remove) => {
-  boardStore.MisIndicadores = remove;
-});
 </script>

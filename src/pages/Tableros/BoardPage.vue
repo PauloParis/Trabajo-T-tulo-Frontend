@@ -10,7 +10,7 @@
           icon="arrow_back"
           color="light-blue-9"
           class="q-mr-sm bg-white"
-          @click="$router.go(-1)"
+          @click="desconect(), $router.go(-1)"
         />
 
         <!-- Usuarios Conectados -->
@@ -18,38 +18,44 @@
           <div class="row items-center">
             <!--div class="col-4">Índice de Felicidad</div-->
             <div class="col-4"></div>
-            <div v-for="(usu, index) in boardStore.usuarios" :key="index">
-              <div class="row q-pa-xs">
+            <div v-for="(user, index) in boardStore.usuarios" :key="index">
+              <div class="row q-pa-xs text-overline">
                 <q-btn
                   :class="`col ${color[index]}`"
                   flat
                   round
                   dense
-                  size="md"
-                  glossy
                   style="width: 40px; height: 40px"
                   @click="
-                    (boardStore.name = usu.Nombre_Usuario),
-                      (boardStore.surname = usu.Apellido),
-                      (boardStore.typeuser = usu.Tipo_Usuario),
-                      (boardStore.category = usu.usuario_tableros[0].Categoria),
-                      (boardStore.description = usu.Descripcion),
-                      (adminStore.btnOpenUserInfo = true)
+                    (adminStore.btnOpenUserInfo = true),
+                      (adminStore.usuarioInfo.name =
+                        user.infoUser[0].Nombre_Usuario),
+                      (adminStore.usuarioInfo.surname =
+                        user.infoUser[0].Apellido),
+                      (adminStore.usuarioInfo.email = user.infoUser[0].Email),
+                      (adminStore.usuarioInfo.country = user.infoUser[0].Pais),
+                      (adminStore.usuarioInfo.type =
+                        user.infoUser[0].Tipo_Usuario),
+                      (adminStore.usuarioInfo.category =
+                        user.infoUser[0].usuario_tableros[0].Categoria),
+                      (adminStore.usuarioInfo.description =
+                        user.infoUser[0].Descripcion)
                   "
                 >
                   <q-tooltip class="bg-purple text-body2 column"
                     ><div class="col">
-                      {{ usu.Nombre_Usuario }} {{ usu.Apellido }}
+                      {{ user.infoUser[0].Nombre_Usuario }}
+                      {{ user.infoUser[0].Apellido }}
                     </div>
                   </q-tooltip>
-                  {{ usu.Nombre_Usuario[0] }}{{ usu.Apellido[0] }}
+                  {{ user.infoUser[0].Nombre_Usuario[0] }}
+                  {{ user.infoUser[0].Apellido[0] }}
                 </q-btn>
                 <getInfoUserComponent></getInfoUserComponent>
               </div>
             </div>
           </div>
         </q-toolbar-title>
-
         <!-- Invitar Usuario -->
         <q-btn
           flat
@@ -57,7 +63,7 @@
           dense
           icon="add_reaction"
           size="lg"
-          @click="boardStore.btninvitar = true"
+          @click="boardStore.openDialogInvite = true"
         ></q-btn>
         <label>Invitar Usuario</label>
       </q-toolbar></q-header
@@ -100,7 +106,8 @@
               color="primary"
               size="lg"
               @click="
-                (boardStore.openDialog = true), (boardStore.Titulo = 'Ciclo')
+                (boardStore.openDialogCreate = true),
+                  (boardStore.Titulo = 'Ciclo')
               "
             ></q-btn>
             <!-- btn Crear Indicador -->
@@ -111,7 +118,7 @@
               color="secondary"
               size="md"
               @click="
-                (boardStore.openDialog = true),
+                (boardStore.openDialogCreate = true),
                   (boardStore.Titulo = 'Indicador')
               "
             >
@@ -131,10 +138,13 @@
             >
               <div
                 @click="
-                  (boardStore.btnviewindicator = true),
-                    (boardStore.idTablero = indicator.tableroIDTablero),
-                    (boardStore.idIndicador = indicator.ID_Indicador),
-                    (boardStore.NombreIndicador = indicator.Nombre_Indicador)
+                  (boardStore.openDialogEditDelete = true),
+                    (boardStore.infoTablero.IdTablero =
+                      indicator.tableroIDTablero),
+                    (boardStore.infoIndicador.IdIndicador =
+                      indicator.ID_Indicador),
+                    (boardStore.infoIndicador.NombreIndicador =
+                      indicator.Nombre_Indicador)
                 "
               >
                 {{ indicator.Nombre_Indicador }}
@@ -159,7 +169,7 @@
               <!-- Nombre del Ciclo & Editar & Eliminar -->
               <q-card-section class="row items-center">
                 <!-- Nombre del Ciclo -->
-                <div class="text-body1 col-md-8">
+                <div class="text-body1 text-weight-bold col-md-8">
                   {{ cycle.Nombre_Ciclo }}
                 </div>
                 <div class="col row justify-end">
@@ -170,9 +180,9 @@
                     icon="edit"
                     color="white"
                     @click="
-                      (boardStore.btneditcycle = true),
-                        (boardStore.NombreCiclo = cycle.Nombre_Ciclo),
-                        (boardStore.idCiclo = cycle.ID_Ciclo)
+                      (boardStore.openDialogEditCycle = true),
+                        (boardStore.infoCiclo.NombreCiclo = cycle.Nombre_Ciclo),
+                        (boardStore.infoCiclo.IdCiclo = cycle.ID_Ciclo)
                     "
                   ></q-btn>
                   <!-- btn Eliminar -->
@@ -184,7 +194,7 @@
                     color="white"
                     @click="
                       (boardStore.openDialogDelete = true),
-                        (boardStore.idCiclo = cycle.ID_Ciclo),
+                        (boardStore.infoCiclo.IdCiclo = cycle.ID_Ciclo),
                         (boardStore.TituloDelete = 'Ciclo')
                     "
                   ></q-btn>
@@ -205,16 +215,7 @@
                     <div class="row items-center">
                       <!-- Nombre Indicador -->
                       <div class="col-6 text-blue-grey-10 text-body1">
-                        <!-- v-if="
-                          (cycle.ID_Ciclo ==
-                            indicator.ciclo_indicadors[item].cicloIDCiclo,
-                          indicator.ID_Indicador ==
-                            indicator.ciclo_indicadors[item]
-                              .indicadoreIDIndicador)
-                        " -->
-                        <!-- {{ indicator.usuario_indicadors[0].Evaluacion }} -->
                         {{ indicator.Nombre_Indicador }}
-                        <!-- - {{ cycle.ID_Ciclo }} -->
                       </div>
                       <!-- Evaluación -->
                       <div class="col-6">
@@ -328,39 +329,36 @@
 </template>
 
 <script setup>
-//CRUD CICLOS
+import createComponent from "src/components/board/createComponent.vue";
 import editCycle from "src/components/board/editCycleComponent.vue";
-//CREAR Y VER INDICADORES
+import deleteComponent from "src/components/board/deleteComponent.vue";
 import editDeleteIndicatorComponent from "src/components/board/editDeleteIndicatorComponent.vue";
-//USUARIO E INVITAR NUEVOS
 import invitationUser from "src/components/board/invitationUserComponent.vue";
 import getInfoUserComponent from "src/components/board/getInfoUserComponent.vue";
-
 import { useBoardStore } from "src/stores/board-store";
-import { useAccessStore } from "src/stores/access-store";
-
-import { useNotify } from "src/composables/notifyHook";
-import { useRoute } from "vue-router";
-import { ref } from "vue";
-
-import createComponent from "src/components/board/createComponent.vue";
-
-import socket from "src/stores/socket-store";
-import deleteComponent from "src/components/board/deleteComponent.vue";
 import { useAdminStore } from "src/stores/admin-store";
+import { useNotify } from "src/composables/notifyHook";
+import { onMounted } from "vue";
+import socket from "src/stores/socket-store";
+import { useQuasar } from "quasar";
 
+const boardStore = useBoardStore();
+const adminStore = useAdminStore();
 const { successNotify, errorNotify } = useNotify();
-
-const evaluacion = ref(null);
+const $q = useQuasar();
 
 const evaluar = async (id_evaluacion, result, id_indicador, id_ciclo) => {
   try {
-    const ide = id_evaluacion;
-    const eva = result;
-    const idi = id_indicador;
-    const idc = id_ciclo;
-    const idt = localStorage.getItem("keyboard");
-    const res = await boardStore.updateEvaluation(ide, eva, idi, idc, idt);
+    const id = {
+      ide: id_evaluacion,
+      ide: id_evaluacion,
+      eva: result,
+      idi: id_indicador,
+      idc: id_ciclo,
+      idt: localStorage.getItem("keyboard"),
+    };
+
+    await boardStore.updateEvaluation(id.ide, id.eva, id.idi, id.idc, id.idt);
     successNotify("Se actualizó la evaluación Correctamente");
   } catch (error) {
     errorNotify("No se pudo actualizar la evaluación en este Indicador");
@@ -369,65 +367,112 @@ const evaluar = async (id_evaluacion, result, id_indicador, id_ciclo) => {
 
 const eliminarEvaluacion = async (idevaluacion, id_indicador, id_ciclo) => {
   try {
-    const idt = localStorage.getItem("keyboard");
-    const idi = id_indicador;
-    const idc = id_ciclo;
-    await boardStore.deleteEvaluation(idevaluacion, idt, idc, idi);
-    await boardStore.getIndicator(idt);
+    $q.loading.show();
+    const id = {
+      ide: idevaluacion,
+      idt: localStorage.getItem("keyboard"),
+      idi: id_indicador,
+      idc: id_ciclo,
+    };
+    await boardStore.deleteEvaluation(id.ide, id.idt, id.idc, id.idi);
+    await boardStore.getIndicator(id.idt);
     successNotify("Se Eliminó la evaluación Correctamente");
   } catch (error) {
     errorNotify("No se pudo Eliminar la evaluación en este Indicador");
+  } finally {
+    $q.loading.hide();
   }
 };
 
-const accessStore = useAccessStore();
-const boardStore = useBoardStore();
-const adminStore = useAdminStore();
-
-boardStore.felicidadTablero = localStorage.getItem("happyboard");
-
-const route = useRoute();
-const idtablero = route.params.idBoard;
-
-//TRAER USUARIO Y CICLOS
-
 boardStore.getCycles(localStorage.getItem("keyboard"));
 boardStore.getIndicator(localStorage.getItem("keyboard"));
-boardStore.getUsers(localStorage.getItem("keyboard"));
+boardStore.getInfoUserSocket(localStorage.getItem("keyboard"));
 
-const idUser = route.params.idName;
-const room = route.params.nameBoard;
+//accessStore.getInfoUser(); //------------------------------------------------------------------------
 
-/* socket.emit("joinRoom", { idUser, room });
-socket.on("ciclo", (msg) => {
-  boardStore.MisCiclos.push(msg);
+const room = localStorage.getItem("board");
+const idUser = localStorage.getItem("keyuser");
+boardStore.felicidadTablero = localStorage.getItem("happyboard");
+
+/* -------------------- SOCKET ------------------- */
+
+// unir al usuario al room especifico
+onMounted(async () => {
+  const infoUser = await boardStore.getInfoUserSocket(
+    localStorage.getItem("keyboard")
+  );
+  socket.emit("joinRoom", { idUser, room, infoUser });
 });
 
-socket.on("indicador", (msg) => {
-  boardStore.MisIndicadores.push(msg);
+// desconectar si sale de la page
+const desconect = () => {
+  socket.disconnect();
+  localStorage.removeItem("keyuser");
+  localStorage.removeItem("happyboard");
+  localStorage.removeItem("board");
+  localStorage.removeItem("keyboard");
+};
+
+window.onpopstate = function () {
+  socket.disconnect();
+  localStorage.removeItem("keyuser");
+  localStorage.removeItem("happyboard");
+  localStorage.removeItem("board");
+  localStorage.removeItem("keyboard");
+};
+
+// obtener usuarios y room ----------------------------------------------------------------------
+socket.on("roomUsers", ({ room, users }) => {
+  boardStore.usuarios = users;
 });
 
-socket.on("editarCiclo", (edit) => {
+// crear ciclo
+socket.on("crearCiclo", (ciclo) => {
+  boardStore.getCycles(localStorage.getItem("keyboard"));
+  boardStore.getIndicator(localStorage.getItem("keyboard"));
+});
+
+// editar ciclo
+socket.on("editarCiclo", (ciclo) => {
   boardStore.MisCiclos = boardStore.MisCiclos.map((item) =>
-    item.ID_Ciclo === edit.ID_Ciclo ? edit : item
+    item.ID_Ciclo === ciclo.ID_Ciclo ? ciclo : item
   );
 });
-socket.on("eliminarCiclo", (remove) => {
-  boardStore.MisCiclos = remove;
+
+// eliminar ciclo
+socket.on("eliminarCiclo", (ciclo) => {
+  boardStore.MisCiclos = ciclo;
 });
-socket.on("felicidadCiclo", (happyciclo) => {
-  boardStore.MisCiclos = boardStore.MisCiclos.map((item) =>
-    item.ID_Ciclo === happyciclo.ID_Ciclo ? happyciclo : item
+
+// crear indicador
+socket.on("crearIndicador", (indicador) => {
+  boardStore.getIndicator(localStorage.getItem("keyboard"));
+});
+
+// editar indicador
+socket.on("editarIndicador", (indicador) => {
+  boardStore.MisIndicadores = boardStore.MisIndicadores.map((item) =>
+    item.ID_Indicador === indicador.ID_Indicador ? indicador : item
   );
 });
-socket.on("felicidadTablero", (hapytablero) => {
-  boardStore.felicidadTablero = hapytablero;
-});
-socket.on("usuarios", (msg) => {
-  boardStore.usuarios.push(msg);
-}); */
 
-const color = [
+// eliminar indicador
+socket.on("eliminarIndicador", (indicador) => {
+  boardStore.MisIndicadores = indicador;
+});
+
+// felicidad del tablero
+socket.on("felicidadTablero", (felicidadTablero) => {
+  localStorage.setItem("happyboard", felicidadTablero);
+  boardStore.felicidadTablero = localStorage.getItem("happyboard");
+});
+
+// felicidad de los ciclos
+socket.on("felicidadCiclo", (felicidadCiclo) => {
+  boardStore.getCycles(localStorage.getItem("keyboard"));
+});
+
+/* const color = [
   "bg-green-10",
   "bg-orange-9",
   "bg-cyan-10",
@@ -438,7 +483,8 @@ const color = [
   "bg-indigo-10",
   "bg-pink-13",
   "bg-amber-10",
-];
+]; */
+const color = ["bg-blue-grey-10", "bg-blue-grey-9", "bg-blue-grey-8"];
 
 const thumbStyle = {
   right: "4px",

@@ -1,7 +1,7 @@
 <template>
   <div class="">
-    <q-dialog v-model="storeBoard.btneditcycle" persistent>
-      <q-card style="min-width: 400px">
+    <q-dialog v-model="boardStore.openDialogEditCycle" persistent>
+      <q-card style="width: 400px">
         <q-card-section>
           <div class="text-h6">Editar Ciclo</div>
           <q-separator></q-separator>
@@ -9,7 +9,7 @@
 
         <q-form class="q-pa-md" @submit.prevent="editarCiclo">
           <q-input
-            v-model="storeBoard.NombreCiclo"
+            v-model="boardStore.infoCiclo.NombreCiclo"
             label="Nombre"
             placeholder="Ingrese Nombre"
             :rules="[
@@ -22,7 +22,7 @@
             <q-btn
               flat
               label="Cancelar"
-              @click="storeBoard.NombreCiclo = ''"
+              @click="boardStore.infoCiclo.NombreCiclo = ''"
               class="text-negative"
               v-close-popup
             />
@@ -37,20 +37,21 @@
 <script setup>
 import { useBoardStore } from "src/stores/board-store";
 import { useNotify } from "src/composables/notifyHook";
+import { useQuasar } from "quasar";
 
+const boardStore = useBoardStore();
 const { successNotify, errorNotify } = useNotify();
-const storeBoard = useBoardStore();
+const $q = useQuasar();
 
 const editarCiclo = async () => {
   try {
-    const data = {
-      ID_Ciclo: storeBoard.idCiclo,
-      Nombre_Ciclo: storeBoard.NombreCiclo,
-    };
-    await storeBoard.editCycle(data);
+    $q.loading.show();
+    await boardStore.editCycle();
     successNotify("El datos del ciclo fueron actualizados correctamente");
   } catch (error) {
-    errorNotify(error.error);
+    errorNotify(error);
+  } finally {
+    $q.loading.hide();
   }
 };
 </script>
