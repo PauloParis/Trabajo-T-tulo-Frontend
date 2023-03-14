@@ -11,7 +11,7 @@
 const { Loading } = require("quasar");
 const { configure } = require("quasar/wrappers");
 
-module.exports = configure(function (/* ctx */) {
+module.exports = configure(function (ctx) {
   return {
     eslint: {
       // fix: true,
@@ -63,7 +63,14 @@ module.exports = configure(function (/* ctx */) {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      env: {
+        FRONT_URI: ctx.dev
+          ? "http://localhost:9000"
+          : "https://short-url-vue-quasar-jwt.netlify.app",
+        MY_API_REST: ctx.dev
+          ? "http://localhost:3000/api/v1"
+          : "https://backend-titulo.onrender.com/api/v1",
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,

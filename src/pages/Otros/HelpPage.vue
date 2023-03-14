@@ -26,7 +26,7 @@
           La Plataforma de índice de Felicidad, es un sistema que permite a los
           usuarios registrados generar Tableros (o Grupos de Trabajo), estos
           funcionarán como un ambiente de trabajo simultaneo entre un máximo de
-          10 integrantes, en los cuales se podrá definir Ciclos (o Spring o
+          5 integrantes, en los cuales se podrá definir Ciclos (o Spring o
           Entregables), donde a su vez tambien se podrán definir indicadores,
           que podrán ser evaluados por los integrantes del Grupo.
         </div>
@@ -47,8 +47,16 @@
           En esta vista, se desplegaran todos los tableros a los que el ususario
           pertenezca, ya sea como creador o invitado. Al seleccionar un tablero
           de la lista, aparecerá la información del tablero (Nombre, Año,
-          Semestre), la cual podrá ser editada, y donde también se podrá
-          eliminar un tablero.
+          Semestre), la cual podrá ser editada, o eliminar dicho tablero.
+          También, muestra a todos los integrantes pertenecientes al tablero, y
+          donde el usuario administrador, podrá cambiar su categoria de Creador
+          o Invitado y asi También desvincular a un usuario.
+        </div>
+        <div class="text-body1 text-negative">
+          Ojo: si el usuario administrador, desvincula al "usuario Creador" se
+          eliminará el tablero y toda su información. Por lo que, si se desea
+          desvincular al usuario creador, ANTES se recomienda poner a otro
+          integrante como "Creador".
         </div>
         <div class="text-body1">
           Por lo que, un tablero solo puede ser eliminado por el creador del
@@ -66,27 +74,29 @@
         <div class="text-body1">
           En esta vista, se desplegaran todos los tableros a los que el ususario
           pertenezca, ya sea como creador o invitado. Al seleccionar un tablero,
-          se mostrará en forma de gráfica, los porcentajes de felicidad de 3
-          grupos.
+          se mostrarán 4 tarjetas con información.
         </div>
         <div class="text-body1">
-          En el primer grupo, al lado superior izquierdo, aparecerán los
+          En la primera tarjeta, se muestra la información basica del tablero
+          (nombre, año, y semestre), y en grande el porcentaje de felicidad
+          total del grupo.
+        </div>
+        <div class="text-body1">
+          En la segunda tarjeta, al lado superior derecho, aparecerán los
           porcentajes de felicidad por ciclo del grupo, cabe mencionar que
           dentro de la gráfica aparecerán aquellos ciclos que tengan
           evaluaciones realizadas.
         </div>
         <div class="text-body1">
-          En el segundo grupo, al lado superior derecho, aparecerán los
-          porcentajes de felicidad por indicador del grupo, aqui se mostrarán
-          todos los indicadores creados, en todos los ciclos del tablero, cabe
-          mencionar que dentro de la gráfica aparecerán aquellos ciclos que
-          tengan evaluaciones realizadas.
+          En la tercera tarjeta, aparecerán los porcentajes de felicidad por
+          indicador del grupo en graficas de barra, aqui se mostrarán todos los
+          indicadores creados, filtrados por ciclo y cuyos valores, representan
+          el promedio realizado por todos los usuarios.
         </div>
         <div class="text-body1">
-          En el tercer grupo, en la parte baja, aparecerán los porcetnajes de
-          felicidad por ususario del grupo, cabe mencionar que dentro de la
-          gráfica aparecerán aquellos usuarios que hayan realizado alguna
-          evaluación.
+          En la última tarjeta, aparecerán los porcetnajes de felicidad por
+          ususario del grupo, en gráfica de radar, aqui se mostrarán todos los
+          usuarios que hayan realizado evaluaciones, filtrados por indicador.
         </div>
       </q-caousel-slide>
 
@@ -97,11 +107,11 @@
         <br />
         <br />
         <div class="text-body1">
-          En esta vista, se desplegan todos los usuarios del sistema, con
-          información de nombre, apellido, país, email y tipo de usuario, al
-          seleccionar un usuario, se podrá modificar los permisos que este
-          tendrá en la plataforma, es decir, se puede cambiar el tipo de usuario
-          (Adminsitrador - Estandar).
+          En esta vista, se desplegan todos los usuarios del sistema, menos el
+          propio con información de nombre, apellido, país, email y tipo de
+          usuario, al seleccionar un usuario, se podrá modificar los permisos
+          que este tendrá en la plataforma, es decir, se puede cambiar el tipo
+          de usuario (Adminsitrador - Estandar).
         </div>
       </q-caousel-slide>
     </q-carousel>
@@ -131,7 +141,7 @@
     >
       <q-carousel-slide name="account" class="column no-wrap">
         <div class="text-h5 text-blue-grey-14">Perfil</div>
-        <br /><br />
+        <br />
         <div class="text-body1">
           En esta vista, se visualizará la información del usuario, como su
           nombre, apellido, país, correo y descripción, ademas del tipo de
@@ -144,6 +154,15 @@
           "Editar Perfil", que permite modificar el nombre, apellido, pais o
           descripción. También se encuentra la opción de "Cambiar Contraseña",
           donde el usuario podrá modificar su contraseña.
+        </div>
+        <div class="text-h5 q-mt-md text-blue-grey-14">Configuraciones</div>
+        <br />
+        <div class="text-body1">
+          En esta vista se encuentran las configuraciones que se podrán realizar
+          de la cuenta de usuario. De momento la única opción de configuración
+          es eliminar la propia cuenta del usuario, al realizar esta opción, se
+          perderá toda la información del usuario, la cual, no podrá ser
+          restaurada.
         </div>
       </q-carousel-slide>
 
@@ -177,16 +196,30 @@
         </div>
       </q-carousel-slide>
 
-      <q-caousel-slide name="setting" class="column no-wrap q-pa-md">
-        <div class="text-h5 text-blue-grey-14">Configuraciones</div>
+      <q-caousel-slide name="board" class="column no-wrap q-pa-md">
+        <div class="text-h5 text-blue-grey-14">Tablero</div>
         <br />
         <br />
         <div class="text-body1">
-          En esta vista se encuentran las configuraciones que se podrán realizar
-          de la cuenta de usuario. De momento la única opción de configuración
-          es eliminar la propia cuenta del usuario, al realizar esta opción, se
-          perderá toda la información del usuario, la cual, no podrá ser
-          restaurada.
+          Al abrir un tablero, ya sea propio o invitado, en la barra superior,
+          se mostrarán los usuarios conectados al tablero en tiempo real, al
+          presionar, en cada usuario, se mostrará la información de este.
+          También se cuenta con un opción de invitar usuarios, mediante el email
+          (máximo 5 usuarios).
+        </div>
+        <div class="text-body1">
+          Dentro de las funcionalidades se encuentra la creación de ciclos, e
+          indicadores (no se pueden crear indicadores, sin tener ciclos ya
+          creados). Tanto ciclos como indicadores, se pueden editar o eliminar.
+        </div>
+        <div class="text-body1">
+          Para realizar las evaluaciones de los indicadores, se cuenta con una
+          barra con 3 opciones, mostrandose una carita triste, normal, o feliz,
+          para que el usuario de su apreciación, está evaluación será secreta
+          entre los usuarios, solo se podrá ver el porcentaje global, del ciclo
+          y tablero también, se cuenta con la opción de eliminar la evaluación.
+          Los cambios, en los valores de felicidad del ciclo y del tablero, se
+          mostrarán en tiempo real.
         </div>
       </q-caousel-slide>
     </q-carousel>
@@ -196,10 +229,10 @@
         glossy
         v-model="slide"
         :options="[
-          { label: 'Perfil', value: 'account' },
+          { label: 'Perfil y Configuración', value: 'account' },
           { label: 'Mis Tableros', value: 'myboard' },
           { label: 'Tableros Invitado', value: 'guestboard' },
-          { label: 'Configuración', value: 'setting' },
+          { label: 'Tablero', value: 'board' },
         ]"
       />
     </div>
@@ -212,17 +245,3 @@ import { ref } from "vue";
 const slide = ref("account");
 const slideAdmin = ref("info");
 </script>
-
-<style lang="scss" scoped>
-.principal {
-  background: url("src/assets/perfil.png");
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-.bordes {
-  border: 1px solid;
-  border-radius: 10px;
-  color: $blue-grey-14;
-}
-</style>

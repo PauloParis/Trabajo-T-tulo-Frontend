@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-dialog v-model="adminStore.btnOpenUserInfo" persistent>
-      <q-card style="min-width: 400px">
+      <q-card style="width: 400px">
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Información Usuario</div>
           <q-space />
@@ -91,10 +91,9 @@ const barStyle = {
 const desvincularUsuario = async () => {
   try {
     await boardSore.disassociateBoard(adminStore.idTablero, adminStore.idUser);
-    //getUserBoard(adminStore.idTablero);
     successNotify("Se desvinculó al usuario del tablero");
   } catch (error) {
-    errorNotify(error.error);
+    errorNotify(error);
   }
 };
 </script>

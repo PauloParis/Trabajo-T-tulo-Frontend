@@ -348,12 +348,3 @@ const handleSubmit = async () => {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.principal {
-  background: url("src/assets/fondo-utem2.jpg");
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-</style>

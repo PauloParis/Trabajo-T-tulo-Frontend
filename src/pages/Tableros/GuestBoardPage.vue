@@ -88,17 +88,10 @@
                 },
               }"
             >
-              <!-- happyBoard: board.Felicidad_Tablero,
-                idBoard: board.ID_Tablero,
-                  idName: board.usuario_tableros[0].usuario.ID_Usuario,
-                  nameUser: board.usuario_tableros[0].usuario.Nombre_Usuario,
-                  surnameUser: board.usuario_tableros[0].usuario.Apellido,
-                  typeUser: board.usuario_tableros[0].usuario.Tipo_Usuario,
-                  userCategory: board.usuario_tableros[0].Categoria, -->
               <q-btn
                 label="Abrir"
                 flat
-                style="width: 250px"
+                style="width: 262px"
                 @click="
                   (boardStore.infoTablero.NombreTablero = board.Nombre_Tablero),
                     (boardStore.infoTablero.IdTablero = board.ID_Tablero),
@@ -146,32 +139,3 @@ function tableros() {
   );
 }
 </script>
-
-<style lang="scss" scoped>
-.card {
-  text-decoration: none;
-  color: black;
-}
-
-.my-card {
-  width: 250px;
-}
-.principal {
-  background: url("src/assets/perfil.png");
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-.bordes {
-  border: 1px solid;
-  border-radius: 10px;
-  color: $blue-grey-14;
-}
-
-@media only screen and (max-width: 1207px) {
-  .centrar-card {
-    justify-content: center;
-  }
-}
-</style>

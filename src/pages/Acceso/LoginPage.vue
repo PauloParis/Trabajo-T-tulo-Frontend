@@ -90,7 +90,7 @@ const router = useRouter();
 const { errorNotify } = useNotify();
 const $q = useQuasar();
 
-const email = ref("vescobar@utem.cl");
+const email = ref("admin@test.cl");
 const password = ref("123456");
 
 const handleSubmit = async () => {
@@ -105,12 +105,3 @@ const handleSubmit = async () => {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.principal {
-  background: url("src/assets/fondo-utem2.jpg");
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-</style>

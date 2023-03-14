@@ -132,12 +132,3 @@ const EliminarCuenta = async () => {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.principal {
-  background: url("src/assets/perfil.png");
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-</style>

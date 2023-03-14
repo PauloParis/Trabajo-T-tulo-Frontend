@@ -81,7 +81,7 @@ const funcionEliminar = async () => {
     try {
       await boardStore.deleteIndicator(boardStore.infoIndicador.IdIndicador);
       boardStore.openDialogDelete = false;
-      boardStore.btnviewindicator = false;
+      boardStore.openDialogEditDelete = false;
       successNotify("El Indicador fue Eliminado Correctamente");
     } catch (error) {
       errorNotify(error);

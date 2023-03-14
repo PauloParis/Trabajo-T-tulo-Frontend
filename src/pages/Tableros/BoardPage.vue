@@ -15,15 +15,14 @@
 
         <!-- Usuarios Conectados -->
         <q-toolbar-title>
-          <div class="row items-center">
-            <!--div class="col-4">Índice de Felicidad</div-->
-            <div class="col-4"></div>
+          <div class="row items-center justify-center">
             <div v-for="(user, index) in boardStore.usuarios" :key="index">
               <div class="row q-pa-xs text-overline">
                 <q-btn
                   :class="`col ${color[index]}`"
                   flat
                   round
+                  glossy
                   dense
                   style="width: 40px; height: 40px"
                   @click="
@@ -68,9 +67,8 @@
         <label>Invitar Usuario</label>
       </q-toolbar></q-header
     >
-
     <q-page-container>
-      <q-page padding class="principal">
+      <q-page padding class="principal-board">
         <br />
 
         <!-- Nombre del Tablero & Felicidad del Tablero -->
@@ -158,14 +156,14 @@
         <br />
 
         <!-- for card -->
-        <div class="row items-center centrar-card">
+        <div class="row items-center centrar-card-board">
           <div
             class=""
             v-for="(cycle, index) in boardStore.MisCiclos"
             :key="index"
           >
             <!-- Card Ciclos -->
-            <q-card class="my-card bordes q-ma-sm" flat bordered>
+            <q-card class="my-card-board bordes q-ma-sm" flat bordered>
               <!-- Nombre del Ciclo & Editar & Eliminar -->
               <q-card-section class="row items-center">
                 <!-- Nombre del Ciclo -->
@@ -394,6 +392,22 @@ const room = localStorage.getItem("board");
 const idUser = localStorage.getItem("keyuser");
 boardStore.felicidadTablero = localStorage.getItem("happyboard");
 
+const thumbStyle = {
+  right: "4px",
+  borderRadius: "5px",
+  backgroundColor: "#027be3",
+  width: "5px",
+  opacity: 0.75,
+};
+
+const barStyle = {
+  right: "2px",
+  borderRadius: "9px",
+  backgroundColor: "#027be3",
+  width: "9px",
+  opacity: 0.2,
+};
+
 /* -------------------- SOCKET ------------------- */
 
 // unir al usuario al room especifico
@@ -473,20 +487,26 @@ socket.on("felicidadCiclo", (felicidadCiclo) => {
 });
 
 /* const color = [
-  "bg-green-10",
-  "bg-orange-9",
-  "bg-cyan-10",
-  "bg-purple-13",
-  "bg-lime-14",
-  "bg-deep-orange-13",
-  "bg-teal-10",
-  "bg-indigo-10",
-  "bg-pink-13",
-  "bg-amber-10",
+  "bg-green-10", //verde oscuro
+  "bg-orange-9", // naranjo
+  "bg-cyan-10", // verde azul
+  "bg-purple-13", //morado muy claro
+  "bg-lime-14", // verde limon claro
+  "bg-deep-orange-13", // naranjo rojo
+  "bg-teal-10", //verde mucho mas oscuro
+  "bg-indigo-10", // azul
+  "bg-pink-13", // rosado
+  "bg-amber-10", //naranjo
 ]; */
-const color = ["bg-blue-grey-10", "bg-blue-grey-9", "bg-blue-grey-8"];
+const color = [
+  "bg-green-10",
+  "bg-indigo-10",
+  "bg-yellow-10",
+  "bg-purple-10",
+  "bg-teal-10",
+];
 
-const thumbStyle = {
+/* const thumbStyle = {
   right: "4px",
   borderRadius: "3px",
   backgroundColor: "#027be3",
@@ -500,149 +520,16 @@ const barStyle = {
   backgroundColor: "#027be3",
   width: "5px",
   opacity: 0.2,
-};
+}; */
 </script>
 
-<style lang="scss" scoped>
-.efecto-indicadores:hover {
-  cursor: pointer;
-  background-color: $blue-grey-2;
-}
-.efecto-indicadores {
-  background-color: white;
-}
-
-.principal {
-  background: url("src/assets/fondos/fondo5.jpg");
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-@media only screen and (max-width: 1146px) {
-  .centrar-card {
-    justify-content: center;
+<style>
+@media only screen and (max-width: 485px) {
+  .aaa {
+    width: 240px;
+    /* overflow-x: scroll;
+    scrollbar-color: rebeccapurple green;
+    scrollbar-width: thin; */
   }
-}
-
-.my-card {
-  width: 350px;
-  background: rgba(235, 236, 240, 0.9);
-  border: 1px solid;
-  border-radius: 10px;
-  color: $blue-grey-14;
-}
-
-.imagesad {
-  background: url("src/assets/faces/sad.png");
-}
-
-.espacio-ocupa {
-  display: inline-block;
-}
-
-.bordes {
-  border: 1px solid;
-  border-radius: 10px;
-  color: $blue-grey-14;
-}
-
-/* ----------------------------------------------------- */
-
-.cabeza-triste {
-  --face-hue1: 0; /* normal 60 */ /* feliz 120 */ /* triste 0 */
-  --face-hue2: 330; /* normal 30 */ /* feliz 90 */ /* triste  330*/
-  background-image: linear-gradient(
-    135deg,
-    hsl(var(--face-hue1), 90%, 55%),
-    hsl(var(--face-hue2), 90%, 45%)
-  );
-  border-radius: 50%;
-  box-shadow: 0 0.5em 0.75em hsla(var(--face-hue2), 90%, 55%, 0.3);
-  margin: 0 auto;
-  position: relative;
-  width: 2.5em;
-  height: 2.5em;
-}
-.cabeza-normal {
-  --face-hue1: 60; /* normal 60 */ /* feliz 120 */ /* triste 0 */
-  --face-hue2: 30; /* normal 30 */ /* feliz 90 */ /* triste  330*/
-  background-image: linear-gradient(
-    135deg,
-    hsl(var(--face-hue1), 90%, 55%),
-    hsl(var(--face-hue2), 90%, 45%)
-  );
-  border-radius: 50%;
-  box-shadow: 0 0.5em 0.75em hsla(var(--face-hue2), 90%, 55%, 0.3);
-  margin: 0 auto;
-  position: relative;
-  width: 2.5em;
-  height: 2.5em;
-}
-.cabeza-feliz {
-  --face-hue1: 120; /* normal 60 */ /* feliz 120 */ /* triste 0 */
-  --face-hue2: 90; /* normal 30 */ /* feliz 90 */ /* triste  330*/
-  background-image: linear-gradient(
-    135deg,
-    hsl(var(--face-hue1), 90%, 55%),
-    hsl(var(--face-hue2), 90%, 45%)
-  );
-  border-radius: 50%;
-  box-shadow: 0 0.5em 0.75em hsla(var(--face-hue2), 90%, 55%, 0.3);
-  margin: 0 auto;
-  position: relative;
-  width: 2.5em;
-  height: 2.5em;
-}
-
-.ojo-izq {
-  background-color: black;
-  left: 0.6em;
-  border-radius: 50%;
-  top: 0.75em;
-  width: 0.5em;
-  height: 0.5em;
-  position: absolute;
-}
-.ojo-der {
-  background-color: black;
-  right: 0.6em;
-  border-radius: 50%;
-  top: 0.75em;
-  width: 0.5em;
-  height: 0.5em;
-  position: absolute;
-}
-.boca-normal {
-  color: black;
-  /* border-radius: 50% 50% 0 0 / 100% 100% 0 0; */
-  box-shadow: 0 0.125em 0 inset;
-  top: 1.75em;
-  left: 0.5em;
-  width: 1.5em;
-  height: 0.7em;
-  position: absolute;
-}
-.boca-feliz {
-  color: black;
-  border-radius: 0 0 50% 50% / 0 0 100% 100%;
-  box-shadow: 0 -0.8em 0 inset;
-
-  top: 1.7em;
-  left: 0.6em;
-  width: 1.3em;
-  height: 0.5em;
-  position: absolute;
-}
-
-.boca-triste {
-  color: black;
-  top: 1.6em;
-  left: 0.5em;
-  width: 1.5em;
-  height: 0.4em;
-  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-  box-shadow: 0 0.125em 0 inset;
-  position: absolute;
 }
 </style>

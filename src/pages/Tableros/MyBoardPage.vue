@@ -122,13 +122,6 @@
                 },
               }"
             >
-              <!-- idName: board.usuario_tableros[0].usuario.ID_Usuario,
-                idBoard: board.ID_Tablero,
-                happyBoard: board.Felicidad_Tablero,
-                  nameUser: board.usuario_tableros[0].usuario.Nombre_Usuario,
-                  surnameUser: board.usuario_tableros[0].usuario.Apellido,
-                  typeUser: board.usuario_tableros[0].usuario.Tipo_Usuario,
-                  userCategory: board.usuario_tableros[0].Categoria, -->
               <q-btn
                 class="my-card"
                 style="height: 40px"
@@ -181,34 +174,3 @@ function tableros() {
   );
 }
 </script>
-
-<style lang="scss" scoped>
-.card {
-  text-decoration: none;
-  color: black;
-}
-.my-card {
-  width: 262px;
-}
-.principal {
-  background: url("src/assets/perfil.png");
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-.btn-fixed {
-  width: 240px;
-}
-
-.bordes {
-  border: 1px solid;
-  border-radius: 10px;
-  color: $blue-grey-14;
-}
-
-@media only screen and (max-width: 1207px) {
-  .centrar-card {
-    justify-content: center;
-  }
-}
-</style>

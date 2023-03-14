@@ -97,7 +97,7 @@
               to="/GuestBoard"
             >
               <q-item-section avatar>
-                <q-icon name="dashboard" />
+                <q-icon name="other_houses" />
                 <!--send-->
               </q-item-section>
               <q-item-section> Tableros Invitado </q-item-section>
@@ -206,7 +206,7 @@
 <script setup>
 import { useAccessStore } from "../stores/access-store";
 import { useRouter } from "vue-router";
-import { ref } from "@vue/reactivity";
+import { ref } from "vue";
 import { useBoardStore } from "src/stores/board-store";
 import { useNotify } from "src/composables/notifyHook";
 import { useQuasar } from "quasar";
@@ -248,10 +248,3 @@ const notifyDone = async (idTablero) => {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.my-menu-link {
-  color: #1976d2;
-  //background: Black;
-}
-</style>

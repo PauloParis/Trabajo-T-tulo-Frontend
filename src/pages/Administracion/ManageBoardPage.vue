@@ -29,7 +29,6 @@
               icon="visibility"
               @click="openModel(props.row)"
             >
-              <!--@click="editItem(props.row)"-->
             </q-btn>
           </q-td>
         </template>
@@ -279,36 +278,3 @@ const columns = [
   },
 ];
 </script>
-
-<style lang="scss" scoped>
-.card {
-  text-decoration: none;
-  color: black;
-}
-.principal {
-  background: url("src/assets/perfil.png");
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-.my-menu-link {
-  color: #1976d2;
-}
-.bordes {
-  border: 1px solid;
-  border-radius: 10px;
-  color: $blue-grey-14;
-}
-
-.espacio-ocupa {
-  display: inline-block;
-}
-
-.efecto-indicadores:hover {
-  cursor: pointer;
-  background-color: $blue-grey-2;
-}
-.efecto-indicadores {
-  background-color: white;
-}
-</style>

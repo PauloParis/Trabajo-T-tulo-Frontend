@@ -260,22 +260,3 @@ const columns = [
   },
 ];
 </script>
-
-<style lang="scss" scoped>
-.card {
-  text-decoration: none;
-  color: black;
-}
-
-.principal {
-  background: url("src/assets/perfil.png");
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-.bordes {
-  border: 1px solid;
-  border-radius: 10px;
-  color: $blue-grey-14;
-}
-</style>

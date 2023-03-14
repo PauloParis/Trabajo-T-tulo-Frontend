@@ -47,8 +47,8 @@
           </div>
           <div class="col-8 text-body1 text-grey-14">
             <q-scroll-area
-              :thumb-style="thumbStyle"
               :bar-style="barStyle"
+              :thumb-style="thumbStyle"
               style="height: 150px"
             >
               <div
@@ -99,18 +99,3 @@ const barStyle = {
   opacity: 0.2,
 };
 </script>
-
-<style lang="scss" scoped>
-.principal {
-  background: url("src/assets/perfil.png");
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-.bordes {
-  border: 1px solid;
-  border-radius: 10px;
-  color: $blue-grey-14;
-}
-</style>
