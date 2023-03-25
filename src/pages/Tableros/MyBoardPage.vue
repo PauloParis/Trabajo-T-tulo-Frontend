@@ -151,7 +151,6 @@ import deleteComponent from "src/components/board/deleteComponent.vue";
 import { useBoardStore } from "src/stores/board-store";
 import { useAccessStore } from "src/stores/access-store";
 import { ref } from "vue";
-import socket from "src/stores/socket-store";
 
 const boardStore = useBoardStore();
 const accessStore = useAccessStore();
@@ -165,7 +164,6 @@ const Abrir = () => {
   localStorage.setItem("happyboard", boardStore.felicidadTablero);
   localStorage.setItem("board", boardStore.infoTablero.NombreTablero);
   localStorage.setItem("keyuser", accessStore.infoUsuario.idUsuario);
-  socket.connect();
 };
 
 function tableros() {

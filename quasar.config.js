@@ -68,8 +68,8 @@ module.exports = configure(function (ctx) {
           ? "http://localhost:9000"
           : "https://plataforma-indice-de-felicidad.netlify.app",
         MY_API_REST: ctx.dev
-          ? "http://localhost:3000/api/v1"
-          : "https://backend-titulo.onrender.com/api/v1",
+          ? "http://localhost:3000"
+          : "https://backend-titulo.onrender.com",
       },
       // rawDefine: {}
       // ignorePublicFolder: true,

@@ -337,7 +337,7 @@ import { useBoardStore } from "src/stores/board-store";
 import { useAdminStore } from "src/stores/admin-store";
 import { useNotify } from "src/composables/notifyHook";
 import { onMounted } from "vue";
-import socket from "src/stores/socket-store";
+import socket from "src/composables/socket";
 import { useQuasar } from "quasar";
 
 const boardStore = useBoardStore();
@@ -356,7 +356,18 @@ const evaluar = async (id_evaluacion, result, id_indicador, id_ciclo) => {
       idt: localStorage.getItem("keyboard"),
     };
 
-    await boardStore.updateEvaluation(id.ide, id.eva, id.idi, id.idc, id.idt);
+    const { status } = await boardStore.updateEvaluation(
+      id.ide,
+      id.eva,
+      id.idi,
+      id.idc,
+      id.idt
+    );
+    /* SOCKET */
+    if (status === 200) {
+      socket.emit("felicidadTablero", boardStore.felicidadTablero);
+      socket.emit("felicidadCiclo");
+    }
     successNotify("Se actualizó la evaluación Correctamente");
   } catch (error) {
     errorNotify("No se pudo actualizar la evaluación en este Indicador");
@@ -372,7 +383,17 @@ const eliminarEvaluacion = async (idevaluacion, id_indicador, id_ciclo) => {
       idi: id_indicador,
       idc: id_ciclo,
     };
-    await boardStore.deleteEvaluation(id.ide, id.idt, id.idc, id.idi);
+    const { status } = await boardStore.deleteEvaluation(
+      id.ide,
+      id.idt,
+      id.idc,
+      id.idi
+    );
+    /* SOCKET */
+    if (status === 200) {
+      socket.emit("felicidadTablero", boardStore.felicidadTablero);
+      socket.emit("felicidadCiclo");
+    }
     await boardStore.getIndicator(id.idt);
     successNotify("Se Eliminó la evaluación Correctamente");
   } catch (error) {
@@ -420,7 +441,7 @@ onMounted(async () => {
 
 // desconectar si sale de la page
 const desconect = () => {
-  socket.disconnect();
+  socket.emit("leaveRoom", { idUser, room });
   localStorage.removeItem("keyuser");
   localStorage.removeItem("happyboard");
   localStorage.removeItem("board");
@@ -428,7 +449,7 @@ const desconect = () => {
 };
 
 window.onpopstate = function () {
-  socket.disconnect();
+  socket.emit("leaveRoom", { idUser, room });
   localStorage.removeItem("keyuser");
   localStorage.removeItem("happyboard");
   localStorage.removeItem("board");
@@ -505,31 +526,4 @@ const color = [
   "bg-purple-10",
   "bg-teal-10",
 ];
-
-/* const thumbStyle = {
-  right: "4px",
-  borderRadius: "3px",
-  backgroundColor: "#027be3",
-  width: "3px",
-  opacity: 0.75,
-};
-
-const barStyle = {
-  right: "2px",
-  borderRadius: "9px",
-  backgroundColor: "#027be3",
-  width: "5px",
-  opacity: 0.2,
-}; */
 </script>
-
-<style>
-@media only screen and (max-width: 485px) {
-  .aaa {
-    width: 240px;
-    /* overflow-x: scroll;
-    scrollbar-color: rebeccapurple green;
-    scrollbar-width: thin; */
-  }
-}
-</style>

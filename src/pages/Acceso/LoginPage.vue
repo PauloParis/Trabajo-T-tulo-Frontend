@@ -8,19 +8,14 @@
               <div>
                 <div class="col-md-6 col-xs-12">
                   <div class="q-pa-md">
-                    <div class="row justify-between items-center">
+                    <div class="row justify-between q-mb-lg items-center">
                       <div
                         class="col-md-6 justify-end text-blue-grey-14 text-h4"
                       >
                         Iniciar Sesión
                       </div>
-                      <div
-                        class="col-md-4 offset-md-2 text-blue-grey-14 text-h6"
-                      >
-                        <img
-                          src="src/assets/utem-logo.png"
-                          style="width: 200px"
-                        />
+                      <div class="col-md-4 offset-md-2">
+                        <div class="utem" />
                       </div>
                     </div>
 

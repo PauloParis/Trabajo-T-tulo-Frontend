@@ -1,11 +1,22 @@
 // app global css in SCSS form
 
+.logo {
+  content: url("src/assets/logocolor.png");
+  width: 35px;
+  height: 40px;
+}
+
+.utem {
+  content: url("../assets/utemlogo.jpg");
+  width: 200px;
+}
+
 .my-menu-link {
   color: #1976d2;
 }
 
 .principal {
-  background: url("src/assets/perfil.png");
+  background: url("src/assets/perfil.jpg");
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
@@ -69,7 +80,7 @@
 // page tablero ----------------------------------------------------
 
 .principal-board {
-  background: url("src/assets/fondos/fondo5.jpg");
+  background: url("src/assets/fondo5.jpg");
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;

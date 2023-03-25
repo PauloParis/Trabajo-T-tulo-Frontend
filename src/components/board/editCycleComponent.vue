@@ -38,6 +38,7 @@
 import { useBoardStore } from "src/stores/board-store";
 import { useNotify } from "src/composables/notifyHook";
 import { useQuasar } from "quasar";
+import socket from "src/composables/socket";
 
 const boardStore = useBoardStore();
 const { successNotify, errorNotify } = useNotify();
@@ -46,7 +47,12 @@ const $q = useQuasar();
 const editarCiclo = async () => {
   try {
     $q.loading.show();
-    await boardStore.editCycle();
+    const { status, ciclo } = await boardStore.editCycle();
+    /* SOCKET */
+    if (status === 200) {
+      socket.emit("editarCiclo", ciclo);
+    }
+    boardStore.getCycles(localStorage.getItem("keyboard"));
     successNotify("El datos del ciclo fueron actualizados correctamente");
   } catch (error) {
     errorNotify(error);

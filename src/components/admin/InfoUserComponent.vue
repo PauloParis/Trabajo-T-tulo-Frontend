@@ -73,10 +73,11 @@
             style="width: 100%"
             outline
             v-close-popup
-            ><q-tooltip class="bg-purple text-body2 column"
-              ><div class="">
-                Si desvincula al usuario 'CREADOR', se eliminará el tablero y
-                toda su información
+            ><q-tooltip
+              class="bg-purple-2 text-body2 text-blue-grey-10 q-pa-md column"
+              ><div>
+                Ojo!!! Necesita al menos 2 usuarios 'CREADOR', para desvincular
+                uno, sino se eliminará el tablero y toda su información.
               </div>
             </q-tooltip></q-btn
           >

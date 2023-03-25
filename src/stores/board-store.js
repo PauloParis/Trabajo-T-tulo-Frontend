@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { api } from "src/boot/axios";
 import { useAccessStore } from "src/stores/access-store";
 import { useAdminStore } from "src/stores/admin-store";
-import socket from "src/stores/socket-store";
+/* import socket from "src/stores/socket-store"; */
 import { Loading } from "quasar";
 
 export const useBoardStore = defineStore("board", () => {
@@ -64,6 +64,7 @@ export const useBoardStore = defineStore("board", () => {
       });
       MisTableros.value.unshift(res.data.myboard);
     } catch (error) {
+      console.log(error);
       throw error.response?.data.error || error;
     }
   };
@@ -81,10 +82,11 @@ export const useBoardStore = defineStore("board", () => {
           nombre_ciclo: nombreCiclo,
         },
       });
-      if (res.status === 200) {
-        const ciclo = res.data.cycle;
-        socket.emit("crearCiclo", ciclo);
-      }
+
+      const status = res.status;
+      const ciclo = res.data.cycle;
+
+      return { status, ciclo };
     } catch (error) {
       throw error.response?.data.error || error;
     }
@@ -104,10 +106,9 @@ export const useBoardStore = defineStore("board", () => {
         },
       });
 
-      if (res.status === 200) {
-        const indicador = res.data.indicator;
-        socket.emit("crearIndicador", indicador);
-      }
+      const status = res.status;
+      const indicador = res.data.indicator;
+      return { status, indicador };
     } catch (error) {
       throw error.response?.data.error || error;
     }
@@ -234,18 +235,16 @@ export const useBoardStore = defineStore("board", () => {
         },
       });
 
-      if (res.status === 200) {
-        const ciclo = res.data.cycle;
-        socket.emit("editarCiclo", ciclo);
-      }
+      const status = res.status;
+      const ciclo = res.data.cycle;
 
-      getCycles(localStorage.getItem("keyboard"));
+      return { status, ciclo };
     } catch (error) {
       throw error.response?.data.error || error;
     }
   };
 
-  // editar indicador
+  // editar indicador -socket
   const editIndicator = async () => {
     try {
       const res = await api({
@@ -259,12 +258,10 @@ export const useBoardStore = defineStore("board", () => {
         },
       });
 
-      if (res.status === 200) {
-        const indicador = res.data.indicator;
-        socket.emit("editarIndicador", indicador);
-      }
+      const status = res.status;
+      const indicador = res.data.indicator;
 
-      getIndicator(localStorage.getItem("keyboard"));
+      return { status, indicador };
     } catch (error) {
       throw error.response?.data.error || error;
     }
@@ -304,14 +301,9 @@ export const useBoardStore = defineStore("board", () => {
       localStorage.setItem("happyboard", res.data.board.Felicidad_Tablero);
       felicidadTablero.value = localStorage.getItem("happyboard");
 
-      if (res.status === 200) {
-        socket.emit(
-          "eliminarCiclo",
-          MisCiclos.value.filter(
-            (item) => item.ID_Ciclo !== infoCiclo.value.IdCiclo
-          )
-        );
-      }
+      const status = res.status;
+
+      return { status };
     } catch (error) {
       throw error.response?.data.error || error;
     }
@@ -336,12 +328,9 @@ export const useBoardStore = defineStore("board", () => {
       felicidadTablero.value = localStorage.getItem("happyboard");
       getCycles(localStorage.getItem("keyboard"));
 
-      if (res.status === 200) {
-        socket.emit(
-          "eliminarIndicador",
-          MisIndicadores.value.filter((item) => item.ID_Indicador !== id)
-        );
-      }
+      const status = res.status;
+
+      return { status };
     } catch (error) {
       throw error.response?.data.error || error;
     }
@@ -394,16 +383,15 @@ export const useBoardStore = defineStore("board", () => {
       felicidadTablero.value = localStorage.getItem("happyboard");
       getCycles(idtablero);
 
-      if (res.status === 200) {
-        socket.emit("felicidadTablero", felicidadTablero.value);
-        socket.emit("felicidadCiclo");
-      }
+      const status = res.status;
+
+      return { status };
     } catch (error) {
       throw error.response?.data.error || error;
     }
   };
 
-  // eliminar evaluación
+  // eliminar evaluación - socket
   const deleteEvaluation = async (
     idevaluacion,
     idtablero,
@@ -423,10 +411,9 @@ export const useBoardStore = defineStore("board", () => {
       felicidadTablero.value = localStorage.getItem("happyboard");
       getCycles(idtablero);
 
-      if (res.status === 200) {
-        socket.emit("felicidadTablero", felicidadTablero.value);
-        socket.emit("felicidadCiclo");
-      }
+      const status = res.status;
+
+      return { status };
     } catch (error) {
       throw error.response?.data.error || error;
     }
@@ -450,7 +437,7 @@ export const useBoardStore = defineStore("board", () => {
     }
   };
 
-  // usuarios conectados al tablero //socket
+  // usuarios conectados al tablero // socket
   const getInfoUserSocket = async (idboard) => {
     try {
       Loading.show();

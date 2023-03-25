@@ -193,7 +193,8 @@ const openModel = async (row) => {
 };
 
 const vaciar = async () => {
-  location.reload();
+  //location.reload();
+  adminStore.getAdminUsers();
 };
 
 const ChangeTypeUser = async () => {

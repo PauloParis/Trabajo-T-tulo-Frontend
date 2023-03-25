@@ -63,6 +63,7 @@ import { useBoardStore } from "src/stores/board-store";
 import deleteComponent from "src/components/board/deleteComponent.vue";
 import { useNotify } from "src/composables/notifyHook";
 import { useQuasar } from "quasar";
+import socket from "src/composables/socket";
 
 const boardStore = useBoardStore();
 const { successNotify, errorNotify } = useNotify();
@@ -71,7 +72,12 @@ const $q = useQuasar();
 const editarIndicador = async () => {
   try {
     $q.loading.show();
-    await boardStore.editIndicator();
+    const { status, indicador } = await boardStore.editIndicator();
+    /* SOCKET */
+    if (status === 200) {
+      socket.emit("editarIndicador", indicador);
+    }
+    boardStore.getIndicator(localStorage.getItem("keyboard"));
     await boardStore.getIndicator(boardStore.infoTablero.IdTablero);
     successNotify("El datos del indicador fueron actualizados correctamente");
   } catch (error) {

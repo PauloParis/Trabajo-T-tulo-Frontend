@@ -113,7 +113,6 @@ import disassociateBoard from "src/components/board/disassociateBoardComponent.v
 import { useBoardStore } from "src/stores/board-store";
 import { useAccessStore } from "src/stores/access-store";
 import { ref } from "vue";
-import socket from "src/stores/socket-store";
 
 const boardStore = useBoardStore();
 const accessStore = useAccessStore();
@@ -123,14 +122,11 @@ accessStore.getInfoUser();
 
 const search = ref("");
 
-//ARREGLAR
 const Abrir = () => {
   localStorage.setItem("keyboard", boardStore.infoTablero.IdTablero);
   localStorage.setItem("happyboard", boardStore.felicidadTablero);
   localStorage.setItem("board", boardStore.infoTablero.NombreTablero);
   localStorage.setItem("keyuser", accessStore.infoUsuario.idUsuario);
-
-  socket.connect();
 };
 
 function tableros() {

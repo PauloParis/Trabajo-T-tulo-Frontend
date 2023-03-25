@@ -32,6 +32,7 @@ import { useNotify } from "src/composables/notifyHook";
 import { useBoardStore } from "src/stores/board-store";
 import { ref } from "vue";
 import { useQuasar } from "quasar";
+import socket from "src/composables/socket";
 
 const boardStore = useBoardStore();
 const { successNotify, errorNotify } = useNotify();
@@ -44,7 +45,15 @@ const funcionCrear = async () => {
   if (boardStore.Titulo == "Ciclo") {
     try {
       $q.loading.show();
-      await boardStore.createCycle(input.value, idtablero);
+      const { status, ciclo } = await boardStore.createCycle(
+        input.value,
+        idtablero
+      );
+      console.log(status, ciclo);
+      /* SOCKET */
+      if (status === 200) {
+        socket.emit("crearCiclo", ciclo);
+      }
       await boardStore.getCycles(idtablero);
       await boardStore.getIndicator(idtablero);
       boardStore.openDialog = false;
@@ -59,7 +68,14 @@ const funcionCrear = async () => {
   if (boardStore.Titulo == "Indicador") {
     try {
       $q.loading.show();
-      await boardStore.createIndicator(input.value, idtablero);
+      const { status, indicador } = await boardStore.createIndicator(
+        input.value,
+        idtablero
+      );
+      /* SOCKET */
+      if (status === 200) {
+        socket.emit("crearIndicador", indicador);
+      }
       await boardStore.getIndicator(idtablero);
       boardStore.openDialog = false;
       successNotify("Se creó el Indicador con éxito");

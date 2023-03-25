@@ -11,12 +11,7 @@
             aria-label="Menu"
             @click="toggleLeftDrawer()"
           />
-          <img
-            class="q-pl-xs q-ml-sm q-mr-sm"
-            src="src/assets/logocolor.png"
-            width="35"
-            height="40"
-          />
+          <div class="q-pl-xs q-ml-sm q-mr-sm logo" />
           <q-toolbar-title> ÍNDICE DE FELICIDAD </q-toolbar-title>
           <!-- <q-toolbar-title> -->
           <q-btn size="sm" round icon="notifications" class="bg-dark">
@@ -35,7 +30,7 @@
                 class="row justify-center"
               >
                 <div class="q-pa-sm text-body2 text-blue-grey-14">
-                  Fuiste agregado al grupo de:
+                  Fuiste agregado al grupo:
                 </div>
                 <div class="text-body1 text-primary text-weight-bold">
                   {{ noti.tablero.Nombre_Tablero }}
@@ -185,7 +180,6 @@
               v-ripple
               active-class="my-menu-link"
               @click="(link = 'CerrarSesion'), logout()"
-              to="/Logout"
             >
               <q-item-section avatar>
                 <q-icon name="logout" />

@@ -235,6 +235,8 @@ const openModel = async (row) => {
     };
     await adminStore.getUserBoard(adminStore.infoTablero.IdTablero);
     boardStore.infoTablero.IdTablero = adminStore.infoTablero.IdTablero;
+
+    //console.log(adminStore.gestionTablero, adminStore.infoTablero.IdTablero);
     dialog.value = true;
   } catch (error) {
     errorNotify("No se pudo abrir la información del tablero");
@@ -242,7 +244,8 @@ const openModel = async (row) => {
 };
 
 const vaciar = async () => {
-  location.reload();
+  //location.reload();
+  adminStore.getBoards();
 };
 
 const columns = [

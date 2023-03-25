@@ -6,12 +6,12 @@
           <div class="col-md-8 offset-md-2 col-xs-12 q-pl-md q-pr-md q-pt-sm">
             <q-card flat class="bg-white text-black radius">
               <div class="q-pa-md">
-                <div class="row justify-between items-center">
+                <div class="row justify-between q-mb-sm items-center">
                   <div class="col-md-5 justify-end text-blue-grey-14 text-h4">
                     Registrarse
                   </div>
-                  <div class="col-md-4 offset-md-3 text-blue-grey-14 text-h6">
-                    <img src="src/assets/utem-logo.png" style="width: 200px" />
+                  <div class="col-md-4 offset-md-3">
+                    <div class="utem" />
                   </div>
                 </div>
 

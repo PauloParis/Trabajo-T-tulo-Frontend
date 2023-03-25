@@ -37,6 +37,7 @@
 import { useNotify } from "src/composables/notifyHook";
 import { useQuasar } from "quasar";
 import { useBoardStore } from "src/stores/board-store";
+import socket from "src/composables/socket";
 
 const $q = useQuasar();
 const { successNotify, errorNotify } = useNotify();
@@ -67,7 +68,16 @@ const funcionEliminar = async () => {
   if (boardStore.TituloDelete == "Ciclo") {
     $q.loading.show();
     try {
-      await boardStore.deleteCycle();
+      const { status } = await boardStore.deleteCycle();
+      /* SOCKET */
+      if (status === 200) {
+        socket.emit(
+          "eliminarCiclo",
+          boardStore.MisCiclos.filter(
+            (item) => item.ID_Ciclo !== boardStore.infoCiclo.IdCiclo
+          )
+        );
+      }
       boardStore.openDialogDelete = false;
       successNotify("El Ciclo fue Eliminado Correctamente");
     } catch (error) {
@@ -79,7 +89,18 @@ const funcionEliminar = async () => {
   if (boardStore.TituloDelete == "Indicador") {
     $q.loading.show();
     try {
-      await boardStore.deleteIndicator(boardStore.infoIndicador.IdIndicador);
+      const { status } = await boardStore.deleteIndicator(
+        boardStore.infoIndicador.IdIndicador
+      );
+      /* SOCKET */
+      if (status === 200) {
+        socket.emit(
+          "eliminarIndicador",
+          boardStore.MisIndicadores.filter(
+            (item) => item.ID_Indicador !== boardStore.infoIndicador.IdIndicador
+          )
+        );
+      }
       boardStore.openDialogDelete = false;
       boardStore.openDialogEditDelete = false;
       successNotify("El Indicador fue Eliminado Correctamente");
